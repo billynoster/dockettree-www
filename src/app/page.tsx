@@ -2,6 +2,7 @@ import { Hero } from '@/components/hero/Hero'
 import { Button } from '@/components/ui/button'
 
 const APP_URL = 'https://app.dockettree.com'
+const SIGNUP_URL = `${APP_URL}/signup`
 const PRICING_URL = `${APP_URL}/pricing`
 
 export default function HomePage() {
@@ -25,7 +26,7 @@ export default function HomePage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild size="lg" variant="accent">
-              <a href={APP_URL}>Start Free Trial</a>
+              <a href={SIGNUP_URL}>Start Free Trial</a>
             </Button>
             <Button asChild size="lg" variant="secondary">
               <a href={PRICING_URL}>See plans in the app</a>

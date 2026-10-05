@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 
 const APP_URL = 'https://app.dockettree.com'
 const LOGIN_URL = `${APP_URL}/login`
+const SIGNUP_URL = `${APP_URL}/signup`
 
 function clamp01(n: number) {
   return Math.min(1, Math.max(0, n))
@@ -134,7 +135,7 @@ export function Hero() {
 
               <div className="hero-rise delay-4 mt-8 flex flex-wrap items-center gap-3">
                 <Button asChild size="lg" variant="accent">
-                  <a href={APP_URL}>Start Free Trial</a>
+                  <a href={SIGNUP_URL}>Start Free Trial</a>
                 </Button>
                 <Button asChild size="lg" variant="inverse">
                   <a href={LOGIN_URL}>Log in</a>

@@ -37,7 +37,7 @@ npm start
 
 | CTA | URL |
 | --- | --- |
-| Start Free Trial | `https://app.dockettree.com` |
+| Start Free Trial | `https://app.dockettree.com/signup` |
 | Log in | `https://app.dockettree.com/login` |
 | See plans in the app | `https://app.dockettree.com/pricing` |
 
