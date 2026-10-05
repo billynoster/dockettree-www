@@ -9,17 +9,12 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion'
-import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import { useEffect, useRef, useState, type MutableRefObject } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
+import { NetworkCanvas } from '@/components/hero/NetworkCanvas'
+import { NetworkFallback } from '@/components/hero/NetworkFallback'
 import { Button } from '@/components/ui/button'
-
-const NetworkCanvas = dynamic(
-  () =>
-    import('@/components/hero/NetworkCanvas').then((m) => m.NetworkCanvas),
-  { ssr: false, loading: () => <div className="h-full w-full bg-evergreen-deep" /> },
-)
 
 const APP_URL = 'https://app.dockettree.com'
 const LOGIN_URL = `${APP_URL}/login`
@@ -28,14 +23,17 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
   const reduce = useReducedMotion()
   const reducedMotion = Boolean(reduce)
-  const progressRef = useRef(reducedMotion ? 1 : 0.08)
+  const progressRef = useRef(reducedMotion ? 1 : 0.12)
+  const [mounted, setMounted] = useState(false)
+  const [webglOk, setWebglOk] = useState(true)
+  const [progress, setProgress] = useState(reducedMotion ? 1 : 0.12)
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end end'],
   })
 
-  const rawProgress = useTransform(scrollYProgress, [0, 0.55], [0.08, 1])
+  const rawProgress = useTransform(scrollYProgress, [0, 0.55], [0.12, 1])
   const smoothProgress = useSpring(rawProgress, {
     stiffness: 90,
     damping: 28,
@@ -44,27 +42,45 @@ export function Hero() {
   const beatOpacity = useTransform(scrollYProgress, [0.35, 0.6], [0, 1])
 
   useMotionValueEvent(smoothProgress, 'change', (v) => {
-    if (!reducedMotion) progressRef.current = v
+    if (reducedMotion) return
+    progressRef.current = v
+    setProgress(v)
   })
 
   useEffect(() => {
-    progressRef.current = reducedMotion ? 1 : 0.08
+    setMounted(true)
+    progressRef.current = reducedMotion ? 1 : 0.12
+    setProgress(reducedMotion ? 1 : 0.12)
+    try {
+      const canvas = document.createElement('canvas')
+      const gl =
+        canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+      setWebglOk(Boolean(gl))
+    } catch {
+      setWebglOk(false)
+    }
   }, [reducedMotion])
 
   return (
     <section ref={sectionRef} className="relative h-[180vh] bg-evergreen-deep">
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <div className="absolute inset-0">
-          <NetworkBridge
-            progressRef={progressRef}
-            reducedMotion={reducedMotion}
-          />
+          <NetworkFallback progress={progress} />
+          {mounted && webglOk && !reducedMotion && (
+            <div className="absolute inset-0">
+              <NetworkCanvas
+                progress={progress}
+                reducedMotion={reducedMotion}
+              />
+            </div>
+          )}
+          {mounted && webglOk && reducedMotion && (
+            <div className="absolute inset-0">
+              <NetworkCanvas progress={1} reducedMotion />
+            </div>
+          )}
           <div
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(22,69,54,0.92)_0%,rgba(31,92,74,0.78)_42%,rgba(31,92,74,0.35)_70%,rgba(22,69,54,0.2)_100%)]"
-            aria-hidden="true"
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_15%_20%,rgba(120,150,106,0.22),transparent_42%),radial-gradient(ellipse_at_80%_85%,rgba(217,164,65,0.12),transparent_40%)]"
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(22,69,54,0.88)_0%,rgba(31,92,74,0.72)_42%,rgba(31,92,74,0.28)_70%,rgba(22,69,54,0.15)_100%)]"
             aria-hidden="true"
           />
         </div>
@@ -88,12 +104,7 @@ export function Hero() {
 
           <div className="flex flex-1 flex-col justify-center pb-16 pt-10">
             <div className="max-w-xl text-ivory">
-              <motion.div
-                initial={reducedMotion ? false : { opacity: 0, scale: 0.86, y: 16 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                className="mb-7"
-              >
+              <div className="hero-rise mb-7">
                 <Image
                   src="/brand/logo-mark.png"
                   alt="Docket Tree"
@@ -102,49 +113,29 @@ export function Hero() {
                   className="h-16 w-16 drop-shadow-[0_8px_24px_rgba(0,0,0,0.28)] sm:h-20 sm:w-20"
                   priority
                 />
-              </motion.div>
+              </div>
 
-              <motion.p
-                initial={reducedMotion ? false : { opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.12, duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-                className="font-display text-4xl font-semibold tracking-tight sm:text-5xl"
-              >
+              <p className="hero-rise delay-1 font-display text-4xl font-semibold tracking-tight sm:text-5xl">
                 Docket Tree
-              </motion.p>
+              </p>
 
-              <motion.h1
-                initial={reducedMotion ? false : { opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.22, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-5 font-display text-[2.1rem] leading-[1.1] font-semibold tracking-tight text-balance sm:text-[2.6rem] lg:text-[3rem]"
-              >
+              <h1 className="hero-rise delay-2 mt-5 font-display text-[2.1rem] leading-[1.1] font-semibold tracking-tight text-balance sm:text-[2.6rem] lg:text-[3rem]">
                 Know who can work. Know what’s next.
-              </motion.h1>
+              </h1>
 
-              <motion.p
-                initial={reducedMotion ? false : { opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.34, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-5 max-w-md text-base leading-relaxed text-ivory/88 sm:text-lg"
-              >
+              <p className="hero-rise delay-3 mt-5 max-w-md text-base leading-relaxed text-ivory/88 sm:text-lg">
                 Vendor readiness for property ops — everything connected, nothing
                 lost.
-              </motion.p>
+              </p>
 
-              <motion.div
-                initial={reducedMotion ? false : { opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.44, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="mt-8 flex flex-wrap items-center gap-3"
-              >
+              <div className="hero-rise delay-4 mt-8 flex flex-wrap items-center gap-3">
                 <Button asChild size="lg" variant="accent">
                   <a href={APP_URL}>Start Free Trial</a>
                 </Button>
                 <Button asChild size="lg" variant="inverse">
                   <a href={LOGIN_URL}>Log in</a>
                 </Button>
-              </motion.div>
+              </div>
 
               <ScrollBeat opacity={beatOpacity} reducedMotion={reducedMotion} />
             </div>
@@ -165,45 +156,9 @@ function ScrollBeat({
   return (
     <motion.p
       style={{ opacity: reducedMotion ? 1 : opacity }}
-      className="mt-10 max-w-sm text-sm tracking-wide text-moss uppercase"
+      className="mt-10 max-w-sm text-sm font-medium tracking-[0.14em] text-amber-gold uppercase"
     >
       Scattered documents → one connected readiness view
     </motion.p>
   )
-}
-
-function NetworkBridge({
-  progressRef,
-  reducedMotion,
-}: {
-  progressRef: MutableRefObject<number>
-  reducedMotion: boolean
-}) {
-  const frameProgress = useRafProgress(progressRef, reducedMotion)
-  return (
-    <NetworkCanvas progress={frameProgress} reducedMotion={reducedMotion} />
-  )
-}
-
-function useRafProgress(
-  progressRef: MutableRefObject<number>,
-  reducedMotion: boolean,
-) {
-  const [value, setValue] = useState(reducedMotion ? 1 : 0.08)
-
-  useEffect(() => {
-    if (reducedMotion) {
-      setValue(1)
-      return
-    }
-    let id = 0
-    const tick = () => {
-      setValue(progressRef.current)
-      id = requestAnimationFrame(tick)
-    }
-    id = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(id)
-  }, [progressRef, reducedMotion])
-
-  return value
 }
