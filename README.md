@@ -43,11 +43,24 @@ npm start
 
 ## Deploy (dockettree.com / www)
 
-Static-friendly Next output or Node host:
+**Host:** Cloudflare Pages with Next.js **static HTML export** (`output: 'export'` → `out/`).
 
-1. **Cloudflare Pages** / Vercel: connect this repo, framework Next.js, production branch `main`.
-2. Point **dockettree.com** + **www** at the marketing deploy.
-3. Keep **app.dockettree.com** on the Cloud Run app (`dockettree` repo).
+No Node/edge adapter (next-on-pages / OpenNext) is required for V1 — the R3F hero runs entirely in the browser.
+
+| Setting | Value |
+| --- | --- |
+| Framework preset | **Next.js (Static HTML Export)** |
+| Production branch | `main` |
+| Build command | `npx next build` (or `npm run build`) |
+| Build output directory | `out` |
+| Environment variable | `NODE_VERSION` = `22` (or `20`) |
+
+1. Cloudflare Dashboard → **Workers & Pages** → Create → Pages → Connect GitHub → `billynoster/dockettree-www`.
+2. Use the build settings above → **Save and Deploy**.
+3. **Custom domains:** add `dockettree.com` and `www.dockettree.com` (zone already on Cloudflare NS).
+4. **Do not change** the `app` DNS record — `app.dockettree.com` stays on Cloud Run (`ghs.googlehosted.com`).
+
+Billy runbook (Project store): `docs/marketing-site-hosting.md`.
 
 Brand PNGs live in `public/brand/` (synced from the app kit). Do not load chrome images from Firebase Storage.
 
