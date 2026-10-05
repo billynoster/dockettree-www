@@ -1,14 +1,6 @@
 'use client'
 
-import {
-  motion,
-  useMotionValueEvent,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from 'framer-motion'
+import { useReducedMotion } from 'framer-motion'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
@@ -19,38 +11,21 @@ import { Button } from '@/components/ui/button'
 const APP_URL = 'https://app.dockettree.com'
 const LOGIN_URL = `${APP_URL}/login`
 
+function clamp01(n: number) {
+  return Math.min(1, Math.max(0, n))
+}
+
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
   const reduce = useReducedMotion()
   const reducedMotion = Boolean(reduce)
-  const progressRef = useRef(reducedMotion ? 1 : 0.12)
   const [mounted, setMounted] = useState(false)
   const [webglOk, setWebglOk] = useState(true)
   const [progress, setProgress] = useState(reducedMotion ? 1 : 0.12)
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end end'],
-  })
-
-  const rawProgress = useTransform(scrollYProgress, [0, 0.55], [0.12, 1])
-  const smoothProgress = useSpring(rawProgress, {
-    stiffness: 90,
-    damping: 28,
-    mass: 0.4,
-  })
-  const beatOpacity = useTransform(scrollYProgress, [0.35, 0.6], [0, 1])
-
-  useMotionValueEvent(smoothProgress, 'change', (v) => {
-    if (reducedMotion) return
-    progressRef.current = v
-    setProgress(v)
-  })
+  const [beatOpacity, setBeatOpacity] = useState(reducedMotion ? 1 : 0)
 
   useEffect(() => {
     setMounted(true)
-    progressRef.current = reducedMotion ? 1 : 0.12
-    setProgress(reducedMotion ? 1 : 0.12)
     try {
       const canvas = document.createElement('canvas')
       const gl =
@@ -58,6 +33,35 @@ export function Hero() {
       setWebglOk(Boolean(gl))
     } catch {
       setWebglOk(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setProgress(1)
+      setBeatOpacity(1)
+      return
+    }
+
+    const update = () => {
+      const el = sectionRef.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const total = el.offsetHeight - window.innerHeight
+      const scrolled = clamp01(-rect.top / Math.max(total, 1))
+      // Map first ~55% of sticky travel to full network connect
+      const network = 0.12 + clamp01(scrolled / 0.55) * 0.88
+      const beat = clamp01((scrolled - 0.3) / 0.25)
+      setProgress(network)
+      setBeatOpacity(beat)
+    }
+
+    update()
+    window.addEventListener('scroll', update, { passive: true })
+    window.addEventListener('resize', update)
+    return () => {
+      window.removeEventListener('scroll', update)
+      window.removeEventListener('resize', update)
     }
   }, [reducedMotion])
 
@@ -137,28 +141,16 @@ export function Hero() {
                 </Button>
               </div>
 
-              <ScrollBeat opacity={beatOpacity} reducedMotion={reducedMotion} />
+              <p
+                style={{ opacity: beatOpacity }}
+                className="mt-10 max-w-sm text-sm font-medium tracking-[0.14em] text-amber-gold uppercase transition-opacity duration-300"
+              >
+                Scattered documents → one connected readiness view
+              </p>
             </div>
           </div>
         </div>
       </div>
     </section>
-  )
-}
-
-function ScrollBeat({
-  opacity,
-  reducedMotion,
-}: {
-  opacity: MotionValue<number>
-  reducedMotion: boolean
-}) {
-  return (
-    <motion.p
-      style={{ opacity: reducedMotion ? 1 : opacity }}
-      className="mt-10 max-w-sm text-sm font-medium tracking-[0.14em] text-amber-gold uppercase"
-    >
-      Scattered documents → one connected readiness view
-    </motion.p>
   )
 }
