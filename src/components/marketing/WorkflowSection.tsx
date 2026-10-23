@@ -8,36 +8,44 @@ import {
   type KeyboardEvent,
 } from 'react'
 
-import { WorkflowStagePanel } from '@/components/marketing/UiPanels'
+import {
+  WorkflowStateVisual,
+  type WorkflowStageId,
+} from '@/components/marketing/visuals'
 import { cn } from '@/lib/utils'
 
-const STAGES = [
+const STAGES: {
+  id: WorkflowStageId
+  label: string
+  title: string
+  body: string
+}[] = [
   {
-    id: 'identify' as const,
+    id: 'identify',
     label: 'Identify gap',
     title: 'Identify missing requirement',
     body: 'Spot which documents or requirements are still open for a vendor before work is scheduled.',
   },
   {
-    id: 'request' as const,
+    id: 'request',
     label: 'Request',
     title: 'Request document',
     body: 'A document update has been requested from the vendor — ownership stays visible to your team.',
   },
   {
-    id: 'waiting' as const,
+    id: 'waiting',
     label: 'Waiting',
     title: 'Waiting on Vendor',
     body: 'The request remains visible with clear ownership while the vendor responds.',
   },
   {
-    id: 'review' as const,
+    id: 'review',
     label: 'In Review',
     title: 'In Review',
     body: 'The newly submitted document is ready for review against your requirements.',
   },
   {
-    id: 'ready' as const,
+    id: 'ready',
     label: 'Ready',
     title: 'Ready',
     body: 'Required items have been reviewed and the vendor is ready for the relevant work, subject to your organization’s rules.',
@@ -175,7 +183,7 @@ export function WorkflowSection() {
                 exit={reduce ? undefined : { opacity: 0, y: -6 }}
                 transition={{ duration: 0.28 }}
               >
-                <WorkflowStagePanel stage={stage.id} />
+                <WorkflowStateVisual stage={stage.id} />
               </motion.div>
             </AnimatePresence>
           </div>
@@ -216,7 +224,7 @@ export function WorkflowSection() {
                   {selected && (
                     <div className="mt-3 space-y-3 pl-10">
                       <p className="text-sm leading-relaxed text-slate">{s.body}</p>
-                      <WorkflowStagePanel stage={s.id} />
+                      <WorkflowStateVisual stage={s.id} />
                     </div>
                   )}
                 </button>

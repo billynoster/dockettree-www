@@ -47,14 +47,17 @@ export function ProductProofSection() {
           className="relative mx-auto mt-10 max-w-5xl sm:mt-12"
         >
           <ProductFrame
-            src="/marketing/readiness.png"
-            alt="Docket Tree vendor readiness reports with status summary and property rollup"
+            src="/marketing/dashboard.png"
+            alt="Authentic Docket Tree dashboard showing readiness counts, needs attention, and upcoming expirations"
             aspect="aspect-[16/9]"
             sizes="(min-width: 1024px) 1024px, 100vw"
             className="shadow-[0_28px_64px_rgba(32,38,35,0.1)]"
           />
+          <p className="mt-3 text-center text-[11px] font-medium tracking-wide text-slate/80 uppercase">
+            Authentic product screenshot · demo environment
+          </p>
 
-          <ul className="mt-7 flex flex-wrap justify-center gap-x-8 gap-y-3">
+          <ul className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-3">
             {CALLOUTS.map((label) => (
               <li
                 key={label}

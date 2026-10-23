@@ -3,8 +3,12 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import type { ReactNode } from 'react'
 
-import { ProductFrame } from '@/components/marketing/ProductFrame'
-import { ReadinessPanel } from '@/components/marketing/UiPanels'
+import {
+  DocumentRequestVisual,
+  ExpirationTrackingVisual,
+  VendorReadinessVisual,
+  VendorRecordVisual,
+} from '@/components/marketing/visuals'
 import { fadeUp } from '@/lib/motion'
 import { cn } from '@/lib/utils'
 
@@ -13,41 +17,35 @@ const FEATURES: {
   body: string
   align: 'left' | 'right'
   bg: string
-  image?: string
-  alt?: string
-  panel?: ReactNode
+  visual: ReactNode
 }[] = [
   {
     title: 'Know who is ready',
     body: 'See readiness status across your vendor network at a glance.',
     align: 'left',
     bg: 'bg-ivory',
-    image: '/marketing/dashboard.png',
-    alt: 'Readiness dashboard with Ready, Needs Action, In Review, and Expiring Soon counts',
+    visual: <VendorReadinessVisual />,
   },
   {
     title: 'Stay ahead of expirations',
     body: 'Identify documents approaching expiration before they become operational surprises.',
     align: 'right',
     bg: 'bg-white',
-    image: '/marketing/expirations-closeup.png',
-    alt: 'Vendor readiness table highlighting upcoming document expirations',
+    visual: <ExpirationTrackingVisual />,
   },
   {
     title: 'Keep requests moving',
     body: 'Track document requests and reviews without relying on fragmented email threads.',
     align: 'left',
     bg: 'bg-pale-moss/50',
-    image: '/marketing/portal.png',
-    alt: 'Vendor portal document requests with submit and acceptance status',
+    visual: <DocumentRequestVisual />,
   },
   {
     title: 'Keep every record connected',
     body: 'Documents, properties, activity, and requirements stay linked to one vendor record.',
     align: 'right',
     bg: 'bg-ivory',
-    image: '/marketing/properties.png',
-    alt: 'Property detail with linked vendors in Docket Tree',
+    visual: <VendorRecordVisual />,
   },
 ]
 
@@ -75,7 +73,10 @@ export function CapabilitiesSection() {
 
       <div>
         {FEATURES.map((feature, index) => (
-          <div key={feature.title} className={cn(feature.bg, index > 0 && 'border-t border-stone/50')}>
+          <div
+            key={feature.title}
+            className={cn(feature.bg, index > 0 && 'border-t border-stone/50')}
+          >
             <motion.article
               variants={fadeUp}
               initial={reduce ? false : 'hidden'}
@@ -100,18 +101,7 @@ export function CapabilitiesSection() {
                   feature.align === 'right' ? 'lg:order-1' : 'lg:order-2'
                 }
               >
-                {feature.image ? (
-                  <ProductFrame
-                    src={feature.image}
-                    alt={feature.alt ?? ''}
-                    aspect="aspect-[16/10]"
-                    sizes="(min-width: 1024px) 560px, 100vw"
-                  />
-                ) : (
-                  <ProductFrame aspect="aspect-[16/10]">
-                    {feature.panel ?? <ReadinessPanel />}
-                  </ProductFrame>
-                )}
+                {feature.visual}
               </div>
             </motion.article>
           </div>

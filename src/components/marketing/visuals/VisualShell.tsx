@@ -1,0 +1,76 @@
+'use client'
+
+import { useReducedMotion } from 'framer-motion'
+import {
+  useEffect,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from 'react'
+
+import { DEMO_NOTICE } from '@/lib/demo-data'
+import { cn } from '@/lib/utils'
+
+type VisualShellProps = {
+  children: ReactNode
+  className?: string
+  title?: string
+  /** When false, omit the small illustrative caption (e.g. dense hero). */
+  showCaption?: boolean
+  tone?: 'light' | 'dark'
+}
+
+/** Shared chrome for marketing product compositions — not a nested browser. */
+export function VisualShell({
+  children,
+  className,
+  title,
+  showCaption = true,
+  tone = 'light',
+}: VisualShellProps) {
+  return (
+    <div
+      className={cn(
+        'overflow-hidden rounded-[18px] border shadow-[0_20px_50px_rgba(32,38,35,0.09)]',
+        tone === 'dark' ? 'border-white/18 bg-white' : 'border-stone bg-white',
+        className,
+      )}
+    >
+      {title ? (
+        <div className="flex items-center justify-between border-b border-stone/80 bg-ivory/90 px-4 py-2.5">
+          <p className="truncate text-xs font-medium text-slate">{title}</p>
+          {showCaption ? (
+            <p className="shrink-0 text-[10px] font-medium tracking-wide text-slate/80 uppercase">
+              {DEMO_NOTICE}
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+      <div className="relative bg-ivory">{children}</div>
+      {!title && showCaption ? (
+        <p className="border-t border-stone/70 bg-white px-4 py-2 text-[10px] font-medium tracking-wide text-slate/75 uppercase">
+          {DEMO_NOTICE}
+        </p>
+      ) : null}
+    </div>
+  )
+}
+
+/** Pause subtle status motion when off-viewport or reduced-motion. */
+export function useVisualMotionActive(rootRef: RefObject<HTMLElement | null>) {
+  const reduce = useReducedMotion()
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+    const el = rootRef.current
+    if (!el || reduce) return
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.35 },
+    )
+    io.observe(el)
+    return () => io.disconnect()
+  }, [rootRef, reduce])
+
+  return Boolean(!reduce && inView)
+}

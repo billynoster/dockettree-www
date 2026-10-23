@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { NetworkCanvas } from '@/components/hero/NetworkCanvas'
 import { NetworkFallback } from '@/components/hero/NetworkFallback'
-import { ProductFrame } from '@/components/marketing/ProductFrame'
+import { ReadinessOverviewVisual } from '@/components/marketing/visuals'
 import { Button } from '@/components/ui/button'
 import { SIGNUP_URL } from '@/lib/site'
 
@@ -67,7 +67,7 @@ export function HeroSection() {
         <div className="absolute inset-0" aria-hidden="true">
           <NetworkFallback progress={progress} />
           {mounted && webglOk && (
-            <div className="absolute inset-0 opacity-50 lg:opacity-75">
+            <div className="absolute inset-0 opacity-45 lg:opacity-70">
               <NetworkCanvas
                 progress={reducedMotion ? 1 : progress}
                 reducedMotion={reducedMotion}
@@ -78,7 +78,7 @@ export function HeroSection() {
         </div>
 
         <div className="relative z-10 mx-auto flex h-full max-w-[1280px] flex-col justify-center px-5 pt-[76px] pb-8 sm:px-8 sm:pt-[80px]">
-          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-12">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12">
             <div className="max-w-xl text-ivory">
               <p className="hero-rise font-display text-[0.72rem] font-semibold tracking-[0.2em] text-ivory/75 uppercase sm:text-xs">
                 Vendor readiness for property operations
@@ -110,16 +110,11 @@ export function HeroSection() {
             </div>
 
             <div className="hero-rise delay-5 relative mx-auto w-full max-w-xl lg:max-w-none">
-              <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] bg-[radial-gradient(circle_at_60%_40%,rgba(120,150,106,0.28),transparent_65%)]" aria-hidden />
-              <ProductFrame
-                src="/marketing/dashboard.png"
-                alt="Docket Tree readiness dashboard showing who is ready, what needs action, and upcoming expirations"
-                priority
-                tone="dark"
-                aspect="aspect-[16/10]"
-                sizes="(min-width: 1024px) 620px, 92vw"
-                className="shadow-[0_28px_70px_rgba(0,0,0,0.38)]"
+              <div
+                className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] bg-[radial-gradient(circle_at_60%_40%,rgba(120,150,106,0.28),transparent_65%)]"
+                aria-hidden
               />
+              <ReadinessOverviewVisual className="shadow-[0_28px_70px_rgba(0,0,0,0.38)]" />
               <p className="mt-3 text-center text-xs font-medium tracking-[0.12em] text-amber-gold/90 uppercase lg:text-left">
                 Scattered documents → one connected readiness view
               </p>
