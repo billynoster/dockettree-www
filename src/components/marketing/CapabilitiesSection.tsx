@@ -1,47 +1,62 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
-import Image from 'next/image'
+import type { ReactNode } from 'react'
 
+import { ProductFrame } from '@/components/marketing/ProductFrame'
+import { ReadinessPanel } from '@/components/marketing/UiPanels'
 import { fadeUp } from '@/lib/motion'
+import { cn } from '@/lib/utils'
 
-const FEATURES = [
+const FEATURES: {
+  title: string
+  body: string
+  align: 'left' | 'right'
+  bg: string
+  image?: string
+  alt?: string
+  panel?: ReactNode
+}[] = [
   {
     title: 'Know who is ready',
     body: 'See readiness status across your vendor network at a glance.',
-    image: '/marketing/product-overview.png',
-    alt: 'Readiness overview dashboard',
-    align: 'left' as const,
+    align: 'left',
+    bg: 'bg-ivory',
+    image: '/marketing/dashboard.png',
+    alt: 'Readiness dashboard with Ready, Needs Action, In Review, and Expiring Soon counts',
   },
   {
     title: 'Stay ahead of expirations',
     body: 'Identify documents approaching expiration before they become operational surprises.',
-    image: '/marketing/product-properties.png',
-    alt: 'Properties and related records in Docket Tree',
-    align: 'right' as const,
+    align: 'right',
+    bg: 'bg-white',
+    image: '/marketing/expirations-closeup.png',
+    alt: 'Vendor readiness table highlighting upcoming document expirations',
   },
   {
     title: 'Keep requests moving',
     body: 'Track document requests and reviews without relying on fragmented email threads.',
-    image: '/marketing/product-overview.png',
-    alt: 'Request and review workflow surface',
-    align: 'left' as const,
+    align: 'left',
+    bg: 'bg-pale-moss/50',
+    image: '/marketing/portal.png',
+    alt: 'Vendor portal document requests with submit and acceptance status',
   },
   {
     title: 'Keep every record connected',
     body: 'Documents, properties, activity, and requirements stay linked to one vendor record.',
-    image: '/marketing/product-properties.png',
-    alt: 'Connected property and vendor records',
-    align: 'right' as const,
+    align: 'right',
+    bg: 'bg-ivory',
+    image: '/marketing/properties.png',
+    alt: 'Property detail with linked vendors in Docket Tree',
   },
-] as const
+]
 
 export function CapabilitiesSection() {
   const reduce = useReducedMotion()
 
   return (
-    <section className="border-t border-stone/60 bg-ivory">
-      <div className="mx-auto max-w-[1280px] px-5 py-24 sm:px-8 sm:py-32">
+    <section className="border-t border-stone/60">
+      <div className="mx-auto max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20">
         <motion.div
           variants={fadeUp}
           initial={reduce ? false : 'hidden'}
@@ -52,29 +67,28 @@ export function CapabilitiesSection() {
           <p className="font-display text-xs font-semibold tracking-[0.18em] text-evergreen uppercase">
             Built for clarity
           </p>
-          <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
             A clearer way to manage vendor readiness.
           </h2>
         </motion.div>
+      </div>
 
-        <div className="mt-16 space-y-20 sm:mt-20 sm:space-y-28">
-          {FEATURES.map((feature) => (
+      <div>
+        {FEATURES.map((feature, index) => (
+          <div key={feature.title} className={cn(feature.bg, index > 0 && 'border-t border-stone/50')}>
             <motion.article
-              key={feature.title}
               variants={fadeUp}
               initial={reduce ? false : 'hidden'}
               whileInView="show"
               viewport={{ once: true, amount: 0.25 }}
-              className={`grid items-center gap-8 lg:grid-cols-2 lg:gap-14 ${
-                feature.align === 'right' ? '' : ''
-              }`}
+              className="mx-auto grid max-w-[1280px] items-center gap-8 px-5 py-14 sm:px-8 sm:py-16 lg:grid-cols-2 lg:gap-12"
             >
               <div
                 className={
                   feature.align === 'right' ? 'lg:order-2' : 'lg:order-1'
                 }
               >
-                <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
+                <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-[1.7rem]">
                   {feature.title}
                 </h3>
                 <p className="mt-3 max-w-md text-base leading-relaxed text-slate">
@@ -82,23 +96,26 @@ export function CapabilitiesSection() {
                 </p>
               </div>
               <div
-                className={`overflow-hidden rounded-2xl border border-stone bg-white shadow-[0_16px_40px_rgba(32,38,35,0.06)] ${
+                className={
                   feature.align === 'right' ? 'lg:order-1' : 'lg:order-2'
-                }`}
+                }
               >
-                <div className="relative aspect-[16/10]">
-                  <Image
+                {feature.image ? (
+                  <ProductFrame
                     src={feature.image}
-                    alt={feature.alt}
-                    fill
-                    className="object-cover object-top"
+                    alt={feature.alt ?? ''}
+                    aspect="aspect-[16/10]"
                     sizes="(min-width: 1024px) 560px, 100vw"
                   />
-                </div>
+                ) : (
+                  <ProductFrame aspect="aspect-[16/10]">
+                    {feature.panel ?? <ReadinessPanel />}
+                  </ProductFrame>
+                )}
               </div>
             </motion.article>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </section>
   )

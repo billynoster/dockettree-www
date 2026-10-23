@@ -1,8 +1,8 @@
 'use client'
 
 import { motion, useReducedMotion } from 'framer-motion'
-import Image from 'next/image'
 
+import { ProductFrame } from '@/components/marketing/ProductFrame'
 import { fadeUp } from '@/lib/motion'
 
 const CALLOUTS = [
@@ -19,7 +19,7 @@ export function ProductProofSection() {
       id="product"
       className="scroll-mt-24 border-t border-stone/60 bg-ivory"
     >
-      <div className="mx-auto max-w-[1280px] px-5 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto max-w-[1280px] px-5 py-16 sm:px-8 sm:py-24">
         <motion.div
           variants={fadeUp}
           initial={reduce ? false : 'hidden'}
@@ -30,10 +30,10 @@ export function ProductProofSection() {
           <p className="font-display text-xs font-semibold tracking-[0.18em] text-evergreen uppercase">
             One connected workspace
           </p>
-          <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl lg:text-[2.75rem]">
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl lg:text-[2.65rem]">
             Everything you need to know, in one view.
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-slate sm:text-lg">
+          <p className="mt-3 text-base leading-relaxed text-slate sm:text-lg">
             See which vendors are ready, what documents are missing, what’s
             expiring, and who owns the next action.
           </p>
@@ -44,29 +44,17 @@ export function ProductProofSection() {
           initial={reduce ? false : 'hidden'}
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="relative mx-auto mt-12 max-w-5xl sm:mt-16"
+          className="relative mx-auto mt-10 max-w-5xl sm:mt-12"
         >
-          <div className="overflow-hidden rounded-[18px] border border-stone bg-white shadow-[0_24px_60px_rgba(32,38,35,0.08)]">
-            <div className="flex items-center gap-2 border-b border-stone/80 bg-ivory/80 px-4 py-2.5">
-              <span className="h-2.5 w-2.5 rounded-full bg-stone" />
-              <span className="h-2.5 w-2.5 rounded-full bg-stone" />
-              <span className="h-2.5 w-2.5 rounded-full bg-stone" />
-              <span className="ml-3 text-xs text-slate">
-                Docket Tree — vendor readiness
-              </span>
-            </div>
-            <div className="relative aspect-[16/10] bg-pale-moss/40">
-              <Image
-                src="/marketing/product-overview.png"
-                alt="Docket Tree readiness overview showing vendor status, expirations, and next actions"
-                fill
-                className="object-cover object-top"
-                sizes="(min-width: 1024px) 1024px, 100vw"
-              />
-            </div>
-          </div>
+          <ProductFrame
+            src="/marketing/readiness.png"
+            alt="Docket Tree vendor readiness reports with status summary and property rollup"
+            aspect="aspect-[16/9]"
+            sizes="(min-width: 1024px) 1024px, 100vw"
+            className="shadow-[0_28px_64px_rgba(32,38,35,0.1)]"
+          />
 
-          <ul className="mt-8 flex flex-wrap justify-center gap-x-8 gap-y-3">
+          <ul className="mt-7 flex flex-wrap justify-center gap-x-8 gap-y-3">
             {CALLOUTS.map((label) => (
               <li
                 key={label}

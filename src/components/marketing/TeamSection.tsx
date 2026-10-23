@@ -17,7 +17,7 @@ export function TeamSection() {
 
   return (
     <section className="border-t border-stone/60 bg-white">
-      <div className="mx-auto grid max-w-[1280px] items-center gap-12 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-2 lg:gap-16">
+      <div className="mx-auto grid max-w-[1280px] items-center gap-10 px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-2 lg:gap-14">
         <motion.div
           variants={fadeUp}
           initial={reduce ? false : 'hidden'}
@@ -27,10 +27,10 @@ export function TeamSection() {
           <p className="font-display text-xs font-semibold tracking-[0.18em] text-evergreen uppercase">
             Teamwork without seat limits
           </p>
-          <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             Bring everyone into the picture.
           </h2>
-          <p className="mt-4 max-w-md text-base leading-relaxed text-slate sm:text-lg">
+          <p className="mt-3 max-w-md text-base leading-relaxed text-slate sm:text-lg">
             Give your operations team shared visibility across vendors,
             properties, documents, and requests without per-seat pricing.
           </p>

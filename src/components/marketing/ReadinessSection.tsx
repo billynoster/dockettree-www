@@ -20,7 +20,7 @@ export function ReadinessSection() {
       id="about"
       className="scroll-mt-24 border-t border-stone/60 bg-pale-moss"
     >
-      <div className="mx-auto max-w-[1280px] px-5 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto max-w-[1280px] px-5 py-16 sm:px-8 sm:py-24">
         <motion.div
           variants={fadeUp}
           initial={reduce ? false : 'hidden'}
@@ -31,10 +31,10 @@ export function ReadinessSection() {
           <p className="font-display text-xs font-semibold tracking-[0.18em] text-evergreen uppercase">
             A different way to think about vendors
           </p>
-          <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
             Clear status. Clear ownership. Clear next steps.
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-slate sm:text-lg">
+          <p className="mt-3 text-base leading-relaxed text-slate sm:text-lg">
             Docket Tree helps teams understand operational readiness without
             reducing every vendor to a simple compliant or non-compliant label.
           </p>

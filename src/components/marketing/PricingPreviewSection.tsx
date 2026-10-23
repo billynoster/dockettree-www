@@ -20,7 +20,7 @@ export function PricingPreviewSection() {
       id="pricing"
       className="scroll-mt-24 border-t border-stone/60 bg-ivory"
     >
-      <div className="mx-auto max-w-[1280px] px-5 py-24 sm:px-8 sm:py-32">
+      <div className="mx-auto max-w-[1280px] px-5 py-16 sm:px-8 sm:py-24">
         <motion.div
           variants={fadeUp}
           initial={reduce ? false : 'hidden'}
@@ -31,10 +31,10 @@ export function PricingPreviewSection() {
           <p className="font-display text-xs font-semibold tracking-[0.18em] text-evergreen uppercase">
             Simple pricing
           </p>
-          <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+          <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
             Grow your vendor network. Not your software bill per seat.
           </h2>
-          <p className="mt-4 text-base leading-relaxed text-slate sm:text-lg">
+          <p className="mt-3 text-base leading-relaxed text-slate sm:text-lg">
             Pricing scales with active vendors and properties, not the number of
             people on your team.
           </p>

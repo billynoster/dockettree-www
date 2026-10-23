@@ -27,11 +27,11 @@ export function FinalCTASection() {
         </g>
       </svg>
 
-      <div className="relative mx-auto max-w-[1280px] px-5 py-24 text-center sm:px-8 sm:py-32">
+      <div className="relative mx-auto max-w-[1280px] px-5 py-16 text-center sm:px-8 sm:py-24">
         <h2 className="font-display text-3xl font-semibold tracking-tight text-ivory text-balance sm:text-4xl lg:text-5xl">
           Everything connected. Nothing lost.
         </h2>
-        <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-ivory/85 sm:text-lg">
+        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-ivory/85 sm:text-lg">
           Bring vendor readiness, documents, requests, reviews, and expirations
           together in one clear workspace.
         </p>

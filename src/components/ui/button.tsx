@@ -7,17 +7,18 @@ import * as React from 'react'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-evergreen focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-colors duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-evergreen focus-visible:ring-offset-2 focus-visible:ring-offset-ivory disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default: 'bg-evergreen text-ivory hover:bg-evergreen-deep',
         secondary:
-          'border border-stone/80 bg-transparent text-charcoal hover:bg-white/70',
-        ghost: 'text-charcoal hover:bg-white/60',
+          'border border-stone/80 bg-transparent text-charcoal hover:border-evergreen/35 hover:bg-white/80',
+        ghost: 'text-charcoal hover:bg-pale-moss/80',
         inverse:
-          'border border-ivory/35 bg-transparent text-ivory hover:bg-ivory/10',
-        accent: 'bg-amber-gold text-charcoal hover:bg-[#c89430]',
+          'border border-ivory/40 bg-transparent text-ivory hover:border-ivory/70 hover:bg-ivory/12',
+        accent:
+          'bg-amber-gold text-charcoal hover:bg-[#c89430] focus-visible:ring-amber-gold',
       },
       size: {
         default: 'h-11 px-5',
