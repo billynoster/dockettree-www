@@ -11,7 +11,7 @@ This is **not** the product app. The durable app remote is [`billynoster/dockett
 - **Framer Motion** for section entrances / workflow / header menu
 - **React Three Fiber** for the hero readiness network only (scattered → connected)
 
-## V2
+## V2 → V2.3
 
 Full marketing narrative: hero (brand + network + product overlay) → product proof → problem → capabilities → workflow → readiness philosophy → team → pricing preview → final CTA → footer.
 
@@ -20,6 +20,7 @@ Full marketing narrative: hero (brand + network + product overlay) → product p
 - Authentic product screenshots in browser frames
 - `prefers-reduced-motion`: static connected network, no ambient spin / large transforms
 - Claims verified against product pricing docs (monthly plans, unlimited internal seats, 30-day trial). **“No credit card required” omitted** — Stripe Checkout collects a payment method for trials.
+- **V2.3 UX:** clearer trial path (“Start in the app”), active-vendor + vendors-don’t-pay pricing notes, pricing-band CTA de-dupe, workflow stage helper — no manipulative funnel tactics.
 
 ## Run locally
 
