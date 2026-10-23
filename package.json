@@ -14,8 +14,10 @@
     "@react-three/fiber": "^9.8.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^12.23.12",
+    "framer-motion": "12.23.12",
     "lucide-react": "^1.52.0",
+    "motion-dom": "12.23.12",
+    "motion-utils": "12.23.6",
     "next": "16.3.8",
     "react": "19.2.8",
     "react-dom": "19.2.8",
@@ -32,6 +34,10 @@
     "eslint-config-next": "16.3.8",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "motion-dom": "12.23.12",
+    "motion-utils": "12.23.6"
   },
   "description": "Marketing site for Docket Tree — vendor readiness for property ops."
 }

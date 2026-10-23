@@ -5,13 +5,15 @@
   --font-sans: var(--font-inter), ui-sans-serif, sans-serif;
 
   --color-evergreen: #1f5c4a;
-  --color-evergreen-deep: #164536;
+  --color-evergreen-deep: #123d31;
+  --color-evergreen-mid: #164536;
   --color-moss: #78966a;
+  --color-pale-moss: #edf2ea;
   --color-amber-gold: #d9a441;
   --color-ivory: #faf8f3;
   --color-charcoal: #202623;
-  --color-slate: #5f6762;
-  --color-stone: #d8d4cb;
+  --color-slate: #606861;
+  --color-stone: #e3e4df;
   --color-surface: #ffffff;
 }
 
@@ -34,12 +36,17 @@
     color: inherit;
     text-decoration: none;
   }
+
+  :focus-visible {
+    outline: 2px solid var(--color-evergreen);
+    outline-offset: 3px;
+  }
 }
 
 @keyframes hero-rise {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -52,19 +59,58 @@
 }
 
 .hero-rise.delay-1 {
-  animation-delay: 90ms;
+  animation-delay: 80ms;
 }
 
 .hero-rise.delay-2 {
-  animation-delay: 160ms;
+  animation-delay: 150ms;
 }
 
 .hero-rise.delay-3 {
-  animation-delay: 230ms;
+  animation-delay: 220ms;
 }
 
 .hero-rise.delay-4 {
-  animation-delay: 300ms;
+  animation-delay: 290ms;
+}
+
+.hero-rise.delay-5 {
+  animation-delay: 360ms;
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.status-chip-ready {
+  background: #e6f1eb;
+  color: #245e49;
+}
+
+.status-chip-needs {
+  background: #fff3d9;
+  color: #865f12;
+}
+
+.status-chip-review {
+  background: #eceaf4;
+  color: #655d84;
+}
+
+.status-chip-waiting {
+  background: #e9f0f3;
+  color: #526b75;
+}
+
+.status-chip-expiring {
+  background: #fff3d9;
+  color: #865f12;
 }
 
 @media (prefers-reduced-motion: reduce) {

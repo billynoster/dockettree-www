@@ -17,9 +17,9 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://dockettree.com'),
-  title: 'Docket Tree — Vendor readiness for property ops',
+  title: 'Docket Tree | Vendor Readiness Software for Property Operations',
   description:
-    'Docket Tree — vendor readiness for property ops. Everything connected, nothing lost. Know who can work and what’s next.',
+    'Docket Tree helps property operations teams manage vendor readiness, documents, requests, reviews, and expirations in one connected workspace.',
   icons: {
     icon: [
       { url: '/favicon.svg', type: 'image/svg+xml' },
@@ -28,10 +28,23 @@ export const metadata: Metadata = {
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
   openGraph: {
-    title: 'Docket Tree',
+    title: 'Docket Tree | Vendor Readiness for Property Operations',
     description:
-      'Vendor readiness for property ops — everything connected, nothing lost.',
+      'Manage vendor readiness, documents, requests, reviews, and expirations in one connected workspace.',
+    url: 'https://dockettree.com',
+    siteName: 'Docket Tree',
     images: ['/brand/logo-stacked.png'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Docket Tree | Vendor Readiness for Property Operations',
+    description:
+      'Manage vendor readiness, documents, requests, reviews, and expirations in one connected workspace.',
+    images: ['/brand/logo-stacked.png'],
+  },
+  alternates: {
+    canonical: 'https://dockettree.com',
   },
 }
 

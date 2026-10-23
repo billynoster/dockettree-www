@@ -1,0 +1,49 @@
+/** Marketing site → app routes (do not invent destinations). */
+export const APP_URL = 'https://app.dockettree.com'
+export const SIGNUP_URL = `${APP_URL}/signup`
+export const LOGIN_URL = `${APP_URL}/login`
+export const PRICING_URL = `${APP_URL}/pricing`
+/** Enterprise / sales — verified owner contact from Project ops. */
+export const CONTACT_EMAIL = 'bno@billyno.com'
+export const CONTACT_SALES_URL = `mailto:${CONTACT_EMAIL}?subject=Docket%20Tree%20Enterprise`
+
+export const NAV_ANCHORS = [
+  { href: '#product', label: 'Product' },
+  { href: '#how-it-works', label: 'How It Works' },
+  { href: '#pricing', label: 'Pricing' },
+  { href: '#about', label: 'About' },
+] as const
+
+/** Verified from product pricing docs — monthly list prices. */
+export const PLANS = [
+  {
+    id: 'starter',
+    name: 'Starter',
+    price: 99,
+    vendors: 50,
+    properties: 5,
+    cta: 'Start Free Trial' as const,
+    href: SIGNUP_URL,
+    featured: false,
+  },
+  {
+    id: 'growth',
+    name: 'Growth',
+    price: 249,
+    vendors: 250,
+    properties: 25,
+    cta: 'Start Free Trial' as const,
+    href: SIGNUP_URL,
+    featured: true,
+  },
+  {
+    id: 'portfolio',
+    name: 'Portfolio',
+    price: 599,
+    vendors: 1000,
+    properties: 100,
+    cta: 'Start Free Trial' as const,
+    href: SIGNUP_URL,
+    featured: false,
+  },
+] as const

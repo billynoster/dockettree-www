@@ -1,23 +1,25 @@
 # Docket Tree — marketing site (`dockettree-www`)
 
-Apex / www marketing site for **dockettree.com**. Product CTAs point to **[https://app.dockettree.com](https://app.dockettree.com)**.
+Apex / www marketing site for **[dockettree.com](https://dockettree.com)**. Product CTAs point to **[https://app.dockettree.com](https://app.dockettree.com)**.
 
 This is **not** the product app. The durable app remote is [`billynoster/dockettree`](https://github.com/billynoster/dockettree).
 
 ## Stack
 
-- **Next.js** (App Router) + TypeScript + Tailwind
+- **Next.js** (App Router) + TypeScript + Tailwind — `output: 'export'` for Cloudflare Pages
 - **shadcn/ui** primitives (`Button`)
-- **Framer Motion** for brand mark / copy / scroll beat
-- **React Three Fiber** for the hero network only (scattered → connected)
+- **Framer Motion** for section entrances / workflow / header menu
+- **React Three Fiber** for the hero readiness network only (scattered → connected)
 
-## V1
+## V2
 
-- Full-bleed network atmosphere hero
-- Brand-first foreground (mark + name + headline + tagline)
-- One scroll beat that advances the network from scattered → connected
-- Start Free Trial / Log in CTAs → app
-- `prefers-reduced-motion`: static fully-connected network, no ambient spin
+Full marketing narrative: hero (brand + network + product overlay) → product proof → problem → capabilities → workflow → readiness philosophy → team → pricing preview → final CTA → footer.
+
+- Sticky marketing header with in-page anchors
+- Intentional hub/branch network topology
+- Authentic product screenshots in browser frames
+- `prefers-reduced-motion`: static connected network, no ambient spin / large transforms
+- Claims verified against product pricing docs (monthly plans, unlimited internal seats, 30-day trial). **“No credit card required” omitted** — Stripe Checkout collects a payment method for trials.
 
 ## Run locally
 
@@ -29,8 +31,8 @@ npm run dev
 Dev server: **http://127.0.0.1:43127**
 
 ```bash
-npm run build
-npm start
+npm run build   # writes static site to out/
+npx serve out -l 43127
 ```
 
 ## CTA targets
@@ -39,13 +41,12 @@ npm start
 | --- | --- |
 | Start Free Trial | `https://app.dockettree.com/signup` |
 | Log in | `https://app.dockettree.com/login` |
-| See plans in the app | `https://app.dockettree.com/pricing` |
+| Compare / Explore Pricing | `https://app.dockettree.com/pricing` |
+| Contact Sales | `mailto:bno@billyno.com` |
 
 ## Deploy (dockettree.com / www)
 
 **Host:** Cloudflare Pages with Next.js **static HTML export** (`output: 'export'` → `out/`).
-
-No Node/edge adapter (next-on-pages / OpenNext) is required for V1 — the R3F hero runs entirely in the browser.
 
 | Setting | Value |
 | --- | --- |
@@ -55,14 +56,7 @@ No Node/edge adapter (next-on-pages / OpenNext) is required for V1 — the R3F h
 | Build output directory | `out` |
 | Environment variable | `NODE_VERSION` = `22` (or `20`) |
 
-1. Cloudflare Dashboard → **Workers & Pages** → Create → Pages → Connect GitHub → `billynoster/dockettree-www`.
-2. Use the build settings above → **Save and Deploy**.
-3. **Custom domains:** add `dockettree.com` and `www.dockettree.com` (zone already on Cloudflare NS).
-4. **Do not change** the `app` DNS record — `app.dockettree.com` stays on Cloud Run (`ghs.googlehosted.com`).
-
-Billy runbook (Project store): `docs/marketing-site-hosting.md`.
-
-Brand PNGs live in `public/brand/` (synced from the app kit). Do not load chrome images from Firebase Storage.
+Keep **app.dockettree.com** on Cloud Run. Brand PNGs live in `public/brand/`.
 
 ## License
 
