@@ -41,8 +41,8 @@ export function ProductProofSection() {
             Everything you need to know, in one view.
           </h2>
           <p className="mt-3 text-base leading-relaxed text-slate sm:text-lg">
-            See which vendors are ready, what documents are missing, what’s
-            expiring, and who owns the next action.
+            One view of readiness and next actions — so your team can decide
+            who can work today.
           </p>
         </motion.div>
 

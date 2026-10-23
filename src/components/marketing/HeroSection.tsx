@@ -117,7 +117,7 @@ export function HeroSection() {
               </div>
 
               <p className="hero-rise delay-4 mt-3 text-sm text-ivory/68">
-                30-day free trial
+                30-day free trial · Start in the app
               </p>
             </div>
 

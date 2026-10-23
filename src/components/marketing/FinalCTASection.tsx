@@ -32,8 +32,8 @@ export function FinalCTASection() {
           Everything connected. Nothing lost.
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-ivory/85 sm:text-lg">
-          Bring vendor readiness, documents, requests, reviews, and expirations
-          together in one clear workspace.
+          Start a 30-day trial in the app, then choose the plan that fits your
+          vendor network.
         </p>
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Button asChild size="lg" variant="accent">
@@ -43,7 +43,9 @@ export function FinalCTASection() {
             <a href={PRICING_URL}>Explore Pricing</a>
           </Button>
         </div>
-        <p className="mt-4 text-sm text-ivory/65">30-day free trial</p>
+        <p className="mt-4 text-sm text-ivory/65">
+          30-day free trial · Start in the app
+        </p>
       </div>
     </section>
   )

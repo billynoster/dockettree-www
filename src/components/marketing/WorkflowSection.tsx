@@ -52,6 +52,9 @@ export function WorkflowSection() {
           <h2 className="mt-3 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
             From request to ready.
           </h2>
+          <p className="mt-3 text-sm text-slate sm:text-base">
+            Select a stage to see what happens.
+          </p>
         </div>
 
         {/* Desktop */}

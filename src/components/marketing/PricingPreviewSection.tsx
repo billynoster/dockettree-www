@@ -8,7 +8,6 @@ import {
   CONTACT_SALES_URL,
   PLANS,
   PRICING_URL,
-  SIGNUP_URL,
 } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
@@ -37,6 +36,9 @@ export function PricingPreviewSection() {
           <p className="mt-3 text-base leading-relaxed text-slate sm:text-lg">
             Pricing scales with active vendors and properties, not the number of
             people on your team.
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-slate/90">
+            Active vendors are non-archived vendor records on your account.
           </p>
         </motion.div>
 
@@ -102,12 +104,15 @@ export function PricingPreviewSection() {
           </motion.article>
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-          <Button asChild size="lg" variant="accent">
-            <a href={SIGNUP_URL}>Start Free Trial</a>
-          </Button>
+        <p className="mt-6 text-center text-sm text-slate">
+          Vendors do not pay to respond to document requests.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <Button asChild size="lg" variant="secondary">
             <a href={PRICING_URL}>Compare Plans</a>
+          </Button>
+          <Button asChild size="lg" variant="secondary">
+            <a href={CONTACT_SALES_URL}>Contact Sales</a>
           </Button>
         </div>
         <p className="mt-4 text-center text-sm text-slate">
