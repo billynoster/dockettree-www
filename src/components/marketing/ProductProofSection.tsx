@@ -11,6 +11,13 @@ const CALLOUTS = [
   'Know the next action',
 ] as const
 
+/** Full chrome-free dashboard capture (1188×490) — shown complete, not cover-cropped. */
+const DASHBOARD = {
+  src: '/marketing/dashboard.png',
+  width: 1188,
+  height: 490,
+} as const
+
 export function ProductProofSection() {
   const reduce = useReducedMotion()
 
@@ -47,9 +54,11 @@ export function ProductProofSection() {
           className="relative mx-auto mt-10 max-w-5xl sm:mt-12"
         >
           <ProductFrame
-            src="/marketing/dashboard.png"
+            src={DASHBOARD.src}
             alt="Authentic Docket Tree dashboard showing readiness counts, needs attention, and upcoming expirations"
-            aspect="aspect-[16/9]"
+            fit="contain"
+            width={DASHBOARD.width}
+            height={DASHBOARD.height}
             sizes="(min-width: 1024px) 1024px, 100vw"
             className="shadow-[0_28px_64px_rgba(32,38,35,0.1)]"
           />

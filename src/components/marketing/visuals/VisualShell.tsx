@@ -8,7 +8,7 @@ import {
   type RefObject,
 } from 'react'
 
-import { DEMO_NOTICE } from '@/lib/demo-data'
+import { DEMO_NOTICE } from '@/lib/marketing/data'
 import { cn } from '@/lib/utils'
 
 type VisualShellProps = {

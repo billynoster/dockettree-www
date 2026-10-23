@@ -37,7 +37,7 @@ const FEATURES: {
     title: 'Keep requests moving',
     body: 'Track document requests and reviews without relying on fragmented email threads.',
     align: 'left',
-    bg: 'bg-pale-moss/50',
+    bg: 'bg-pale-moss/40',
     visual: <DocumentRequestVisual />,
   },
   {
@@ -54,7 +54,7 @@ export function CapabilitiesSection() {
 
   return (
     <section className="border-t border-stone/60">
-      <div className="mx-auto max-w-[1280px] px-5 py-16 sm:px-8 sm:py-20">
+      <div className="mx-auto max-w-[1280px] px-5 py-12 sm:px-8 sm:py-16">
         <motion.div
           variants={fadeUp}
           initial={reduce ? false : 'hidden'}
@@ -82,7 +82,7 @@ export function CapabilitiesSection() {
               initial={reduce ? false : 'hidden'}
               whileInView="show"
               viewport={{ once: true, amount: 0.25 }}
-              className="mx-auto grid max-w-[1280px] items-center gap-8 px-5 py-14 sm:px-8 sm:py-16 lg:grid-cols-2 lg:gap-12"
+              className="mx-auto grid max-w-[1280px] items-center gap-8 px-5 py-12 sm:gap-10 sm:px-8 sm:py-14 lg:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] lg:gap-14 xl:gap-16"
             >
               <div
                 className={
@@ -92,14 +92,15 @@ export function CapabilitiesSection() {
                 <h3 className="font-display text-2xl font-semibold tracking-tight sm:text-[1.7rem]">
                   {feature.title}
                 </h3>
-                <p className="mt-3 max-w-md text-base leading-relaxed text-slate">
+                <p className="mt-2.5 max-w-md text-base leading-relaxed text-slate">
                   {feature.body}
                 </p>
               </div>
               <div
-                className={
-                  feature.align === 'right' ? 'lg:order-1' : 'lg:order-2'
-                }
+                className={cn(
+                  'min-w-0',
+                  feature.align === 'right' ? 'lg:order-1' : 'lg:order-2',
+                )}
               >
                 {feature.visual}
               </div>

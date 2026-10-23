@@ -8,49 +8,11 @@ import {
   type KeyboardEvent,
 } from 'react'
 
-import {
-  WorkflowStateVisual,
-  type WorkflowStageId,
-} from '@/components/marketing/visuals'
+import { WorkflowStateVisual } from '@/components/marketing/visuals'
+import { DEMO_WORKFLOW } from '@/lib/marketing/data'
 import { cn } from '@/lib/utils'
 
-const STAGES: {
-  id: WorkflowStageId
-  label: string
-  title: string
-  body: string
-}[] = [
-  {
-    id: 'identify',
-    label: 'Identify gap',
-    title: 'Identify missing requirement',
-    body: 'Spot which documents or requirements are still open for a vendor before work is scheduled.',
-  },
-  {
-    id: 'request',
-    label: 'Request',
-    title: 'Request document',
-    body: 'A document update has been requested from the vendor — ownership stays visible to your team.',
-  },
-  {
-    id: 'waiting',
-    label: 'Waiting',
-    title: 'Waiting on Vendor',
-    body: 'The request remains visible with clear ownership while the vendor responds.',
-  },
-  {
-    id: 'review',
-    label: 'In Review',
-    title: 'In Review',
-    body: 'The newly submitted document is ready for review against your requirements.',
-  },
-  {
-    id: 'ready',
-    label: 'Ready',
-    title: 'Ready',
-    body: 'Required items have been reviewed and the vendor is ready for the relevant work, subject to your organization’s rules.',
-  },
-]
+const STAGES = DEMO_WORKFLOW
 
 export function WorkflowSection() {
   const [active, setActive] = useState(0)

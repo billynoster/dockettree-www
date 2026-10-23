@@ -67,14 +67,26 @@ export function HeroSection() {
         <div className="absolute inset-0" aria-hidden="true">
           <NetworkFallback progress={progress} />
           {mounted && webglOk && (
-            <div className="absolute inset-0 opacity-45 lg:opacity-70">
+            <div
+              className="absolute inset-0 transition-opacity duration-500"
+              style={{
+                opacity: reducedMotion
+                  ? 0.55
+                  : 0.42 + Math.min(1, progress) * 0.28,
+              }}
+            >
               <NetworkCanvas
                 progress={reducedMotion ? 1 : progress}
                 reducedMotion={reducedMotion}
               />
             </div>
           )}
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(18,61,49,0.95)_0%,rgba(18,61,49,0.82)_36%,rgba(18,61,49,0.45)_62%,rgba(18,61,49,0.28)_100%)]" />
+          <div
+            className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(18,61,49,0.95)_0%,rgba(18,61,49,0.82)_36%,rgba(18,61,49,0.45)_62%,rgba(18,61,49,0.28)_100%)] transition-opacity duration-500"
+            style={{
+              opacity: reducedMotion ? 1 : 1 - Math.max(0, progress - 0.75) * 0.35,
+            }}
+          />
         </div>
 
         <div className="relative z-10 mx-auto flex h-full max-w-[1280px] flex-col justify-center px-5 pt-[76px] pb-8 sm:px-8 sm:pt-[80px]">

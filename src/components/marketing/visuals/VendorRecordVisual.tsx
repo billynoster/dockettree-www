@@ -3,11 +3,10 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { useRef } from 'react'
 
-import { DEMO_PROPERTY } from '@/lib/demo-data'
+import { DEMO_PROPERTY } from '@/lib/marketing/data'
 
 import { VisualShell, useVisualMotionActive } from './VisualShell'
 
-/** Feature: keep every record connected — property + linked vendors. */
 export function VendorRecordVisual({ className }: { className?: string }) {
   const rootRef = useRef<HTMLDivElement>(null)
   const active = useVisualMotionActive(rootRef)
@@ -50,9 +49,11 @@ export function VendorRecordVisual({ className }: { className?: string }) {
                 className="flex items-center justify-between border-b border-stone/70 px-3 py-2.5 last:border-b-0"
                 initial={reduce ? false : { opacity: 0, x: -6 }}
                 animate={
-                  active || reduce ? { opacity: 1, x: 0 } : { opacity: 0.92, x: 0 }
+                  active || reduce
+                    ? { opacity: 1, x: 0 }
+                    : { opacity: 0.92, x: 0 }
                 }
-                transition={{ duration: 0.3, delay: reduce ? 0 : i * 0.05 }}
+                transition={{ duration: 0.28, delay: reduce ? 0 : i * 0.04 }}
               >
                 <span className="text-sm font-medium text-charcoal">{name}</span>
                 <span className="text-[10px] font-semibold tracking-wide text-moss uppercase">
