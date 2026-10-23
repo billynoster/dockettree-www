@@ -11,11 +11,11 @@ const CALLOUTS = [
   'Know the next action',
 ] as const
 
-/** Full chrome-free dashboard capture (1188×490) — shown complete, not cover-cropped. */
+/** Full app chrome (sidebar + main) — no OS/browser chrome; contain, not cover-cropped. */
 const DASHBOARD = {
   src: '/marketing/dashboard.png',
-  width: 1188,
-  height: 490,
+  width: 1440,
+  height: 900,
 } as const
 
 export function ProductProofSection() {
@@ -51,15 +51,15 @@ export function ProductProofSection() {
           initial={reduce ? false : 'hidden'}
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="relative mx-auto mt-10 max-w-5xl sm:mt-12"
+          className="relative mx-auto mt-10 max-w-[1180px] sm:mt-12"
         >
           <ProductFrame
             src={DASHBOARD.src}
-            alt="Authentic Docket Tree dashboard showing readiness counts, needs attention, and upcoming expirations"
+            alt="Authentic Docket Tree dashboard with sidebar navigation and readiness overview — needs attention, expirations, and recent activity"
             fit="contain"
             width={DASHBOARD.width}
             height={DASHBOARD.height}
-            sizes="(min-width: 1024px) 1024px, 100vw"
+            sizes="(min-width: 1280px) 1180px, 100vw"
             className="shadow-[0_28px_64px_rgba(32,38,35,0.1)]"
           />
           <p className="mt-3 text-center text-[11px] font-medium tracking-wide text-slate/80 uppercase">
