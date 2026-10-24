@@ -1,3 +1,8 @@
+/**
+ * Ironwood Pest Control — one coherent vendor journey for the
+ * “From request to ready” marketing stepper. Fictional demo data only.
+ */
+
 export type WorkflowStageId =
   | 'identify'
   | 'request'
@@ -5,71 +10,153 @@ export type WorkflowStageId =
   | 'review'
   | 'ready'
 
-export const DEMO_WORKFLOW = [
+export type RequirementState =
+  | 'accepted'
+  | 'missing'
+  | 'requested'
+  | 'waiting'
+  | 'in-review'
+
+export type WorkflowRequirement = {
+  id: string
+  name: string
+  state: RequirementState
+  stateLabel: string
+}
+
+export type WorkflowStage = {
+  id: WorkflowStageId
+  label: string
+  /** Stage headline in the preview (brief wording). */
+  title: string
+  /** Short explanation + operational outcome. */
+  body: string
+  /** Who needs to act / what happens next. */
+  outcome: string
+  status: string
+  statusClass: string
+  acceptedCount: number
+  requirements: WorkflowRequirement[]
+  /** Optional contextual note under the checklist (request/review state). */
+  contextNote?: string
+}
+
+const REQ = {
+  insurance: 'Insurance certificate',
+  service: 'Service agreement',
+  safety: 'Safety acknowledgment',
+} as const
+
+export const WORKFLOW_VENDOR = {
+  name: 'Ironwood Pest Control',
+  trade: 'Pest control',
+  property: 'Westfield Plaza',
+} as const
+
+export const DEMO_WORKFLOW: readonly WorkflowStage[] = [
   {
-    id: 'identify' as const,
+    id: 'identify',
     label: 'Identify gap',
-    title: 'Identify missing requirement',
-    body: 'Spot which documents or requirements are still open for a vendor before work is scheduled.',
-    panel: {
-      title: 'Missing requirement',
-      chip: 'Needs Action',
-      chipClass: 'status-chip-needs',
-      detail: 'Safety acknowledgment missing for Ironwood Pest Control.',
-      rows: ['Insurance certificate · Accepted', 'Service agreement · Accepted'],
-    },
+    title: 'Something needs attention.',
+    body: 'Ironwood’s insurance certificate and service agreement are already accepted. The safety acknowledgment is still missing.',
+    outcome: 'Your team needs to request the outstanding acknowledgment before work can proceed.',
+    status: 'Needs Action',
+    statusClass: 'status-chip-needs',
+    acceptedCount: 2,
+    requirements: [
+      { id: 'ins', name: REQ.insurance, state: 'accepted', stateLabel: 'Accepted' },
+      { id: 'svc', name: REQ.service, state: 'accepted', stateLabel: 'Accepted' },
+      {
+        id: 'saf',
+        name: REQ.safety,
+        state: 'missing',
+        stateLabel: 'Missing',
+      },
+    ],
+    contextNote: 'Outstanding: safety acknowledgment for Westfield Plaza.',
   },
   {
-    id: 'request' as const,
+    id: 'request',
     label: 'Request',
-    title: 'Request document',
-    body: 'A document update has been requested from the vendor — ownership stays visible to your team.',
-    panel: {
-      title: 'Request sent',
-      chip: 'Waiting on Vendor',
-      chipClass: 'status-chip-waiting',
-      detail: 'Document update requested from the vendor. Ownership stays visible.',
-      rows: ['Requested · Safety acknowledgment', 'Assigned · Vendor portal'],
-    },
+    title: 'Request what’s missing.',
+    body: 'Send a document request for the safety acknowledgment so Ironwood knows exactly what to provide.',
+    outcome: 'Ownership stays with the vendor until they respond in the portal.',
+    status: 'Request Sent',
+    statusClass: 'status-chip-waiting',
+    acceptedCount: 2,
+    requirements: [
+      { id: 'ins', name: REQ.insurance, state: 'accepted', stateLabel: 'Accepted' },
+      { id: 'svc', name: REQ.service, state: 'accepted', stateLabel: 'Accepted' },
+      {
+        id: 'saf',
+        name: REQ.safety,
+        state: 'requested',
+        stateLabel: 'Requested',
+      },
+    ],
+    contextNote: 'Request sent · Safety acknowledgment · Vendor portal',
   },
   {
-    id: 'waiting' as const,
-    label: 'Waiting',
-    title: 'Waiting on Vendor',
-    body: 'The request remains visible with clear ownership while the vendor responds.',
-    panel: {
-      title: 'Waiting on Vendor',
-      chip: 'Waiting on Vendor',
-      chipClass: 'status-chip-waiting',
-      detail: 'Request remains open until the vendor submits a document.',
-      rows: ['No submission yet', 'Reminder available'],
-    },
+    id: 'waiting',
+    label: 'Waiting on Vendor',
+    title: 'Know who’s up next.',
+    body: 'The request remains open with clear ownership while Ironwood prepares the acknowledgment.',
+    outcome: 'Ironwood Pest Control needs to submit the document next.',
+    status: 'Waiting on Vendor',
+    statusClass: 'status-chip-waiting',
+    acceptedCount: 2,
+    requirements: [
+      { id: 'ins', name: REQ.insurance, state: 'accepted', stateLabel: 'Accepted' },
+      { id: 'svc', name: REQ.service, state: 'accepted', stateLabel: 'Accepted' },
+      {
+        id: 'saf',
+        name: REQ.safety,
+        state: 'waiting',
+        stateLabel: 'Waiting',
+      },
+    ],
+    contextNote: 'Waiting on · Ironwood Pest Control',
   },
   {
-    id: 'review' as const,
+    id: 'review',
     label: 'In Review',
-    title: 'In Review',
-    body: 'The newly submitted document is ready for review against your requirements.',
-    panel: {
-      title: 'In Review',
-      chip: 'In Review',
-      chipClass: 'status-chip-review',
-      detail: 'New submission ready for review against your requirements.',
-      rows: ['Insurance certificate v2 submitted', 'Reviewer · Operations'],
-    },
+    title: 'Review the submission.',
+    body: 'Ironwood uploaded the safety acknowledgment. Your team can review it against the requirement.',
+    outcome: 'Operations reviews the submission before readiness updates.',
+    status: 'In Review',
+    statusClass: 'status-chip-review',
+    acceptedCount: 2,
+    requirements: [
+      { id: 'ins', name: REQ.insurance, state: 'accepted', stateLabel: 'Accepted' },
+      { id: 'svc', name: REQ.service, state: 'accepted', stateLabel: 'Accepted' },
+      {
+        id: 'saf',
+        name: REQ.safety,
+        state: 'in-review',
+        stateLabel: 'In Review',
+      },
+    ],
+    contextNote: 'Submitted · Safety acknowledgment · Reviewer · Operations',
   },
   {
-    id: 'ready' as const,
+    id: 'ready',
     label: 'Ready',
-    title: 'Ready',
-    body: 'Required items have been reviewed and the vendor is ready for the relevant work, subject to your organization’s rules.',
-    panel: {
-      title: 'Ready for work',
-      chip: 'Ready',
-      chipClass: 'status-chip-ready',
-      detail: 'Required items reviewed. Vendor is ready subject to your rules.',
-      rows: ['All required current', 'Next expiration tracked'],
-    },
+    title: 'Everything required is in place.',
+    body: 'All three requirements are accepted. Readiness reflects the requirements configured for this work or property — not a legal certification.',
+    outcome: 'Ironwood Pest Control is ready for the relevant work at Westfield Plaza.',
+    status: 'Ready',
+    statusClass: 'status-chip-ready',
+    acceptedCount: 3,
+    requirements: [
+      { id: 'ins', name: REQ.insurance, state: 'accepted', stateLabel: 'Accepted' },
+      { id: 'svc', name: REQ.service, state: 'accepted', stateLabel: 'Accepted' },
+      {
+        id: 'saf',
+        name: REQ.safety,
+        state: 'accepted',
+        stateLabel: 'Accepted',
+      },
+    ],
   },
 ] as const
 
