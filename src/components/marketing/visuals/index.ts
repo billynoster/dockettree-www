@@ -1,5 +1,6 @@
 export { DocumentRequestVisual } from './DocumentRequestVisual'
 export { ExpirationTrackingVisual } from './ExpirationTrackingVisual'
+export { InteractiveDashboardVisual } from './InteractiveDashboardVisual'
 export { ReadinessOverviewVisual } from './ReadinessOverviewVisual'
 export { VendorReadinessVisual } from './VendorReadinessVisual'
 export { VendorRecordVisual } from './VendorRecordVisual'
