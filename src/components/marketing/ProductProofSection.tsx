@@ -13,7 +13,7 @@ const CALLOUTS = [
   'Know the next action',
 ] as const
 
-/** Hi-DPI static capture — reduced-motion / noscript-style fallback. */
+/** Hi-DPI static capture — noscript / no-JS fallback only (not reduced-motion). */
 const DASHBOARD_FALLBACK = {
   src: '/marketing/dashboard.png',
   width: 1440,
@@ -55,7 +55,13 @@ export function ProductProofSection() {
           viewport={{ once: true, amount: 0.15 }}
           className="relative mx-auto mt-10 max-w-[1180px] sm:mt-12"
         >
-          {reduce ? (
+          {/*
+            Always mount the interactive shell. Prefer-reduced-motion must NOT
+            swap to a static PNG (common on macOS Accessibility → Reduce motion)
+            — that looked like a failed deploy. Static image is noscript only.
+          */}
+          <InteractiveDashboardVisual />
+          <noscript>
             <ProductFrame
               src={DASHBOARD_FALLBACK.src}
               alt="Docket Tree dashboard demonstration — sidebar, readiness overview, needs attention, expirations, and recent activity (demo environment)"
@@ -65,14 +71,10 @@ export function ProductProofSection() {
               sizes="(min-width: 1280px) 1180px, 100vw"
               className="shadow-[0_28px_64px_rgba(32,38,35,0.1)]"
             />
-          ) : (
-            <InteractiveDashboardVisual />
-          )}
+          </noscript>
 
           <p className="mt-3 text-center text-[11px] font-medium tracking-wide text-slate/80 uppercase">
-            {reduce
-              ? 'Authentic product screenshot · demo environment'
-              : 'Interactive product demo · fictional demo data'}
+            Interactive product demo · fictional demo data
           </p>
 
           <ul className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-3">
