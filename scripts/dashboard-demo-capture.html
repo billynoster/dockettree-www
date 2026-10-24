@@ -1,0 +1,648 @@
+<!doctype html>
+<!--
+  Fidelity mock for marketing Mode 1 authentic screenshot.
+  Serve from public/:  python3 -m http.server 43191 --directory public
+  Open: /dashboard-demo-capture.html (copy this file into public/ temporarily)
+  Capture #capture at 1440×900. Demo data only — not Billy’s live org.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Docket Tree — demo dashboard capture</title>
+    <style>
+      :root {
+        --evergreen: #1f5c4a;
+        --evergreen-deep: #123d31;
+        --moss: #78966a;
+        --pale-moss: #e7efe6;
+        --amber: #d9a441;
+        --amber-soft: #f3e4c4;
+        --ivory: #f7f4ee;
+        --stone: #e4e0d7;
+        --slate: #5c635e;
+        --charcoal: #202623;
+        --needs: #c9842f;
+        --needs-bg: #fbf1e2;
+        --review: #7a6bb5;
+        --review-bg: #efeaf8;
+        --ready: #2f7d5c;
+        --ready-bg: #e6f3ec;
+        --expiring: #b7791f;
+        --expiring-bg: #f8efd9;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 1440px;
+        height: 900px;
+        overflow: hidden;
+        font-family:
+          'Source Sans 3',
+          'Segoe UI',
+          system-ui,
+          -apple-system,
+          sans-serif;
+        color: var(--charcoal);
+        background: var(--ivory);
+      }
+      .app {
+        display: grid;
+        grid-template-columns: 248px 1fr;
+        width: 1440px;
+        height: 900px;
+        background: var(--ivory);
+      }
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        padding: 16px 12px 12px;
+        border-right: 1px solid var(--stone);
+        background: var(--ivory);
+      }
+      .brand {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 4px 8px 16px;
+      }
+      .brand img {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+      }
+      .brand .name {
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 1.15;
+      }
+      .brand .org {
+        font-size: 11px;
+        color: var(--slate);
+        margin-top: 2px;
+      }
+      .section-label {
+        margin: 8px 8px 6px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #8a918c;
+      }
+      .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .nav a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        color: var(--charcoal);
+        text-decoration: none;
+        font-size: 13.5px;
+        font-weight: 550;
+      }
+      .nav a.active {
+        background: var(--pale-moss);
+        box-shadow: inset 3px 0 0 var(--evergreen);
+      }
+      .nav a .icon {
+        width: 18px;
+        height: 18px;
+        display: grid;
+        place-items: center;
+        color: var(--slate);
+        flex-shrink: 0;
+      }
+      .nav a.active .icon {
+        color: var(--evergreen);
+      }
+      .badge {
+        margin-left: auto;
+        min-width: 18px;
+        height: 18px;
+        padding: 0 5px;
+        border-radius: 999px;
+        background: var(--evergreen);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        display: grid;
+        place-items: center;
+      }
+      .sidebar-foot {
+        margin-top: auto;
+        padding-top: 12px;
+        border-top: 1px solid var(--stone);
+      }
+      .collapse {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        color: var(--slate);
+        font-size: 13px;
+      }
+      .user {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 8px 4px;
+      }
+      .avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        background: var(--pale-moss);
+        color: var(--evergreen);
+        display: grid;
+        place-items: center;
+        font-size: 12px;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .user .who {
+        font-size: 13px;
+        font-weight: 650;
+      }
+      .user .meta {
+        font-size: 11px;
+        color: var(--slate);
+      }
+      .main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        background: #fff;
+        margin: 10px 10px 10px 0;
+        border: 1px solid var(--stone);
+        border-radius: 18px 18px 12px 12px;
+        overflow: hidden;
+      }
+      .topbar {
+        display: grid;
+        grid-template-columns: 1fr minmax(280px, 420px) 1fr;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--stone);
+        background: #fff;
+      }
+      .search {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 38px;
+        padding: 0 14px;
+        border: 1px solid var(--stone);
+        border-radius: 999px;
+        color: #8a918c;
+        font-size: 13.5px;
+        background: #fbfaf7;
+      }
+      .top-actions {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 12px;
+      }
+      .bell {
+        width: 34px;
+        height: 34px;
+        border-radius: 999px;
+        border: 1px solid var(--stone);
+        display: grid;
+        place-items: center;
+        color: var(--slate);
+      }
+      .top-user {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+      }
+      .top-user .role {
+        color: var(--slate);
+        font-size: 12px;
+      }
+      .content {
+        padding: 22px 24px 18px;
+        overflow: hidden;
+        background: #fbfaf7;
+        flex: 1;
+      }
+      .eyebrow {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--slate);
+      }
+      h1 {
+        margin: 6px 0 0;
+        font-size: 28px;
+        line-height: 1.15;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .sub {
+        margin: 8px 0 0;
+        color: var(--slate);
+        font-size: 14px;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-top: 18px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--stone);
+        border-radius: 14px;
+        padding: 14px 14px 12px;
+        min-height: 108px;
+      }
+      .card .label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        font-weight: 650;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+      }
+      .card .n {
+        margin-top: 8px;
+        font-size: 30px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+      }
+      .card .hint {
+        margin-top: 4px;
+        font-size: 12px;
+        color: var(--slate);
+        line-height: 1.35;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1.35fr 0.9fr;
+        gap: 12px;
+        margin-top: 14px;
+        align-items: start;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid var(--stone);
+        border-radius: 14px;
+        padding: 14px 14px 10px;
+      }
+      .panel h2 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .panel .panel-sub {
+        margin: 3px 0 10px;
+        font-size: 12px;
+        color: var(--slate);
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+        padding: 10px 0;
+        border-top: 1px solid #eeeae2;
+      }
+      .row:first-of-type {
+        border-top: 0;
+      }
+      .row .title {
+        font-size: 13.5px;
+        font-weight: 650;
+      }
+      .row .detail {
+        margin-top: 2px;
+        font-size: 12px;
+        color: var(--slate);
+      }
+      .chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 650;
+        white-space: nowrap;
+      }
+      .chip.needs {
+        background: var(--needs-bg);
+        color: #8a5a14;
+      }
+      .chip.ready {
+        background: var(--ready-bg);
+        color: var(--ready);
+      }
+      .chip.expiring {
+        background: var(--expiring-bg);
+        color: #8a5a14;
+      }
+      .chip.review {
+        background: var(--review-bg);
+        color: #5a4d8c;
+      }
+      .chip.started {
+        background: #eeeae2;
+        color: var(--slate);
+      }
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+      .view-all {
+        font-size: 12px;
+        color: var(--evergreen);
+        font-weight: 650;
+      }
+      .activity .row {
+        grid-template-columns: 1fr auto;
+      }
+      .activity .when {
+        font-size: 11px;
+        color: #8a918c;
+        white-space: nowrap;
+      }
+      svg {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app" id="capture">
+      <aside class="sidebar">
+        <div class="brand">
+          <img src="/brand/logo-mark.png" alt="" width="32" height="32" />
+          <div>
+            <div class="name">Docket Tree</div>
+            <div class="org">Northshore Property Ops</div>
+          </div>
+        </div>
+
+        <div class="section-label">Workspace</div>
+        <nav class="nav">
+          <a class="active" href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span
+            >Dashboard</a
+          >
+          <a href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="3"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a3 3 0 0 1 0 5.74"/></svg></span
+            >Vendors</a
+          >
+          <a href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M5 21V8l7-4 7 4v13"/><path d="M9 21v-6h6v6"/></svg></span
+            >Properties</a
+          >
+          <a href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span
+            >Requests</a
+          >
+          <a href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6"/><path d="M9 11h2"/></svg></span
+            >Reviews<span class="badge">7</span></a
+          >
+          <a href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/></svg></span
+            >Documents</a
+          >
+          <a href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="M7 16v-5"/><path d="M12 16V8"/><path d="M17 16v-3"/></svg></span
+            >Reports</a
+          >
+        </nav>
+
+        <div class="section-label" style="margin-top: 14px">Records</div>
+        <nav class="nav">
+          <a href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v12H5.17L4 17.17V4z"/><path d="M8 8h8"/><path d="M8 12h5"/></svg></span
+            >Notifications</a
+          >
+          <a href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span
+            >Activity</a
+          >
+          <a href="#"
+            ><span class="icon"
+              ><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span
+            >Settings</a
+          >
+        </nav>
+
+        <div class="sidebar-foot">
+          <div class="collapse">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m15 18-6-6 6-6"/></svg>
+            Collapse
+          </div>
+          <div class="user">
+            <div class="avatar">JH</div>
+            <div>
+              <div class="who">Jordan Hale</div>
+              <div class="meta">jordan.hale@example.com</div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="main">
+        <header class="topbar">
+          <div></div>
+          <div class="search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            Search vendors…
+          </div>
+          <div class="top-actions">
+            <div class="bell">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.9 1.9 0 0 0 3.4 0"/></svg>
+            </div>
+            <div class="top-user">
+              <div class="avatar">JH</div>
+              <div>
+                <div style="font-weight: 650">Jordan Hale</div>
+                <div class="role">Admin</div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="content">
+          <div class="eyebrow">Today · Oct 24, 2026</div>
+          <h1>Good afternoon. Here’s what needs attention.</h1>
+          <p class="sub">
+            Know who can work, what’s missing or expiring, and what to do next ·
+            America/Chicago
+          </p>
+
+          <div class="cards">
+            <div class="card">
+              <div class="label"><span class="dot" style="background: var(--ready)"></span>Ready</div>
+              <div class="n">4</div>
+              <div class="hint">Everything currently required is in place.</div>
+            </div>
+            <div class="card">
+              <div class="label"><span class="dot" style="background: var(--needs)"></span>Needs Action</div>
+              <div class="n">4</div>
+              <div class="hint">Something needs attention before work can move forward.</div>
+            </div>
+            <div class="card">
+              <div class="label"><span class="dot" style="background: var(--review)"></span>In Review</div>
+              <div class="n">7</div>
+              <div class="hint">Documents or information currently being reviewed.</div>
+            </div>
+            <div class="card">
+              <div class="label"><span class="dot" style="background: var(--expiring)"></span>Expiring Soon</div>
+              <div class="n">2</div>
+              <div class="hint">An active requirement is approaching its expiration date.</div>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="panel">
+              <h2>Needs Attention</h2>
+              <div class="panel-sub">Severity order — expired, corrections, missing, expiring, reviews.</div>
+
+              <div class="row">
+                <div>
+                  <div class="title">Summit Fire Protection</div>
+                  <div class="detail">Insurance certificate expired (renewal awaiting review)</div>
+                </div>
+                <div class="chips"><span class="chip needs">Needs Action</span></div>
+              </div>
+              <div class="row">
+                <div>
+                  <div class="title">Harborview Plumbing</div>
+                  <div class="detail">Safety acknowledgment corrections requested</div>
+                </div>
+                <div class="chips"><span class="chip needs">Needs Action</span></div>
+              </div>
+              <div class="row">
+                <div>
+                  <div class="title">Ironwood Pest Control</div>
+                  <div class="detail">Safety acknowledgment missing</div>
+                </div>
+                <div class="chips"><span class="chip needs">Needs Action</span></div>
+              </div>
+              <div class="row">
+                <div>
+                  <div class="title">Willow Creek Signage</div>
+                  <div class="detail">No required items assigned yet</div>
+                </div>
+                <div class="chips"><span class="chip started">Not Started</span></div>
+              </div>
+              <div class="row">
+                <div>
+                  <div class="title">Cedar Line Landscaping</div>
+                  <div class="detail">Required document expires in 13 days</div>
+                </div>
+                <div class="chips">
+                  <span class="chip ready">Ready</span>
+                  <span class="chip expiring">Expiring Soon · Nov 6, 2026</span>
+                </div>
+              </div>
+              <div class="row">
+                <div>
+                  <div class="title">Riverstone Mechanical Services</div>
+                  <div class="detail">Required document expires in 18 days</div>
+                </div>
+                <div class="chips">
+                  <span class="chip ready">Ready</span>
+                  <span class="chip expiring">Expiring Soon · Nov 11, 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="stack">
+              <div class="panel">
+                <div class="panel-head">
+                  <h2>Upcoming Expirations</h2>
+                  <span class="view-all">View all</span>
+                </div>
+                <div class="row">
+                  <div>
+                    <div class="title">Cedar Line Landscaping</div>
+                    <div class="detail">Expires in 13 days · Nov 6, 2026</div>
+                  </div>
+                  <div class="chips"><span class="chip expiring">Expiring Soon</span></div>
+                </div>
+                <div class="row">
+                  <div>
+                    <div class="title">Riverstone Mechanical Services</div>
+                    <div class="detail">Expires in 18 days · Nov 11, 2026</div>
+                  </div>
+                  <div class="chips"><span class="chip expiring">Expiring Soon</span></div>
+                </div>
+              </div>
+
+              <div class="panel activity">
+                <div class="panel-head">
+                  <h2>Recent Activity</h2>
+                  <span class="view-all">View all</span>
+                </div>
+                <div class="row">
+                  <div>
+                    <div class="title">Alan Prewitt submitted Insurance certificate v2</div>
+                    <div class="detail">Summit Fire Protection</div>
+                  </div>
+                  <div class="when">2 hours ago</div>
+                </div>
+                <div class="row">
+                  <div>
+                    <div class="title">Safety acknowledgment requested</div>
+                    <div class="detail">Harborview Plumbing</div>
+                  </div>
+                  <div class="when">Yesterday</div>
+                </div>
+                <div class="row">
+                  <div>
+                    <div class="title">Insurance certificate accepted</div>
+                    <div class="detail">Bluewater Janitorial</div>
+                  </div>
+                  <div class="when">2 days ago</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>
