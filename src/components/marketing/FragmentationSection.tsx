@@ -1,8 +1,9 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useInView, useReducedMotion } from 'framer-motion'
 import {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -18,7 +19,6 @@ const SOURCES = [
     id: 'sheet',
     label: 'Spreadsheet',
     detail: 'Vendor status tabs',
-    /** Stagger as % of a fixed source-column width — fragmented, not uniform. */
     offsetPx: 0,
     icon: (
       <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden>
@@ -85,6 +85,24 @@ const SOURCES = [
   },
 ] as const
 
+/** Calm enterprise easing — no bounce. */
+const EASE = [0.22, 1, 0.36, 1] as const
+
+/**
+ * Choreography (ms from sequence start):
+ * 0–400 cards · 400–1300 paths · 1300–1700 hub · 1700–2300 arrow+workspace
+ */
+const T = {
+  cardDuration: 0.32,
+  cardStagger: 0.07,
+  pathDelay: 0.4,
+  pathDuration: 0.9,
+  hubDelay: 1.3,
+  hubDuration: 0.4,
+  finaleDelay: 1.7,
+  finaleDuration: 0.55,
+} as const
+
 type PathGeom = {
   curves: string[]
   arrow: string
@@ -113,7 +131,6 @@ function useConvergenceGeometry(
 
     const hb = hub.getBoundingClientRect()
     const db = dest.getBoundingClientRect()
-    const hx = hb.left + hb.width / 2 - c.left
     const hy = hb.top + hb.height / 2 - c.top
     const hubLeft = hb.left - c.left
     const destLeft = db.left - c.left
@@ -126,7 +143,6 @@ function useConvergenceGeometry(
         const y1 = r.top + r.height / 2 - c.top
         const targetX = hubLeft - 1
         const dx = Math.max(targetX - x1, 24)
-        // Horizontal run, then soft settle into the hub — room for the curve.
         const c1x = x1 + dx * 0.55
         const c1y = y1
         const c2x = targetX - Math.min(36, dx * 0.28)
@@ -173,6 +189,27 @@ function useConvergenceGeometry(
   }, [containerRef, enabled, measure])
 
   return geom
+}
+
+/**
+ * One-time entrance when the diagram enters view.
+ * Content stays readable before/during the sequence (relationships reveal;
+ * nothing waits on animation to become usable).
+ */
+function useDiagramEntrance(reduce: boolean | null) {
+  const rootRef = useRef<HTMLDivElement>(null)
+  const inView = useInView(rootRef, { once: true, amount: 0.32 })
+  const [go, setGo] = useState(false)
+
+  useEffect(() => {
+    if (reduce) setGo(true)
+  }, [reduce])
+
+  useEffect(() => {
+    if (inView) setGo(true)
+  }, [inView])
+
+  return { rootRef, go, reduce: Boolean(reduce) }
 }
 
 function ReadinessDestination({
@@ -251,24 +288,64 @@ function ReadinessDestination({
   )
 }
 
-function HubMark({ className }: { className?: string }) {
+function HubMark({
+  className,
+  go,
+  reduce,
+}: {
+  className?: string
+  go: boolean
+  reduce: boolean
+}) {
   return (
-    <span
+    <motion.span
       className={cn(
         'flex h-11 w-11 items-center justify-center rounded-full bg-evergreen text-ivory shadow-[0_10px_24px_rgba(31,92,74,0.3)] ring-[5px] ring-white',
         className,
       )}
+      initial={false}
+      animate={
+        reduce || go
+          ? { opacity: 1, scale: 1 }
+          : { opacity: 0.42, scale: 0.94 }
+      }
+      transition={
+        reduce
+          ? { duration: 0 }
+          : { duration: T.hubDuration, delay: T.hubDelay, ease: EASE }
+      }
     >
       <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" aria-hidden>
-        <path
+        <motion.path
           d="M3.5 8.2 6.4 11l6.1-6.5"
           stroke="currentColor"
           strokeWidth="1.8"
           strokeLinecap="round"
           strokeLinejoin="round"
+          initial={false}
+          animate={
+            reduce || go
+              ? { pathLength: 1, opacity: 1 }
+              : { pathLength: 0, opacity: 0.35 }
+          }
+          transition={
+            reduce
+              ? { duration: 0 }
+              : {
+                  pathLength: {
+                    duration: T.hubDuration * 0.85,
+                    delay: T.hubDelay + 0.06,
+                    ease: EASE,
+                  },
+                  opacity: {
+                    duration: 0.2,
+                    delay: T.hubDelay,
+                  },
+                }
+          }
         />
       </svg>
-    </span>
+    </motion.span>
   )
 }
 
@@ -305,7 +382,8 @@ function SourceCard({
   )
 }
 
-function DiagramDesktop({ reduce }: { reduce: boolean | null }) {
+function DiagramDesktop({ reduce }: { reduce: boolean }) {
+  const { rootRef, go } = useDiagramEntrance(reduce)
   const containerRef = useRef<HTMLDivElement>(null)
   const hubRef = useRef<HTMLDivElement>(null)
   const destRef = useRef<HTMLDivElement>(null)
@@ -319,127 +397,271 @@ function DiagramDesktop({ reduce }: { reduce: boolean | null }) {
   )
 
   return (
-    <div
-      ref={containerRef}
-      className="relative hidden min-h-[22rem] md:block"
-    >
-      <div className="grid grid-cols-[minmax(14.5rem,16rem)_minmax(8.5rem,1fr)_minmax(17.5rem,22rem)] items-center gap-0">
-        <div className="relative z-[2] flex flex-col gap-3 py-2">
-          {SOURCES.map((source, i) => (
-            <div key={source.id}>
-              <SourceCard
-                source={source}
-                style={{ marginLeft: source.offsetPx }}
-                cardRef={(el) => {
-                  sourceRefs.current[i] = el
-                }}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* Wide corridor — hub centered in the breathing room */}
-        <div className="relative z-[2] flex min-h-[18rem] items-center justify-center px-2">
-          <div ref={hubRef}>
-            <HubMark />
+    <div ref={rootRef} className="relative hidden min-h-[22rem] md:block">
+      <div
+        ref={containerRef}
+        className="relative min-h-[22rem]"
+      >
+        <div className="grid grid-cols-[minmax(14.5rem,16rem)_minmax(8.5rem,1fr)_minmax(17.5rem,22rem)] items-center gap-0">
+          <div className="relative z-[2] flex flex-col gap-3 py-2">
+            {SOURCES.map((source, i) => (
+              <motion.div
+                key={source.id}
+                initial={false}
+                animate={
+                  reduce || go
+                    ? { opacity: 1, y: 0 }
+                    : { opacity: 0.62, y: 8 }
+                }
+                transition={
+                  reduce
+                    ? { duration: 0 }
+                    : {
+                        duration: T.cardDuration,
+                        delay: i * T.cardStagger,
+                        ease: EASE,
+                      }
+                }
+              >
+                <SourceCard
+                  source={source}
+                  style={{ marginLeft: source.offsetPx }}
+                  cardRef={(el) => {
+                    sourceRefs.current[i] = el
+                  }}
+                />
+              </motion.div>
+            ))}
           </div>
+
+          <div className="relative z-[2] flex min-h-[18rem] items-center justify-center px-2">
+            <div ref={hubRef}>
+              <HubMark go={go} reduce={reduce} />
+            </div>
+          </div>
+
+          <motion.div
+            className="relative z-[2] justify-self-stretch"
+            initial={false}
+            animate={
+              reduce || go
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0.58, y: 10 }
+            }
+            transition={
+              reduce
+                ? { duration: 0 }
+                : {
+                    duration: T.finaleDuration,
+                    delay: T.finaleDelay,
+                    ease: EASE,
+                  }
+            }
+          >
+            <ReadinessDestination cardRef={destRef} />
+          </motion.div>
         </div>
 
-        <div className="relative z-[2] justify-self-stretch">
-          <ReadinessDestination cardRef={destRef} />
-        </div>
-      </div>
-
-      {geom ? (
-        <svg
-          className="pointer-events-none absolute inset-0 z-[1] h-full w-full overflow-visible"
-          viewBox={`0 0 ${geom.width} ${geom.height}`}
-          fill="none"
-          aria-hidden
-        >
-          <defs>
-            <marker
-              id="frag-arrow-v2"
-              markerWidth="7"
-              markerHeight="7"
-              refX="6"
-              refY="3.5"
-              orient="auto"
-            >
-              <path d="M0 0 L7 3.5 L0 7 Z" fill="#1F5C4A" />
-            </marker>
-          </defs>
-          {geom.curves.map((d, i) => (
+        {geom ? (
+          <svg
+            className="pointer-events-none absolute inset-0 z-[1] h-full w-full overflow-visible"
+            viewBox={`0 0 ${geom.width} ${geom.height}`}
+            fill="none"
+            aria-hidden
+          >
+            <defs>
+              <marker
+                id="frag-arrow-motion"
+                markerWidth="7"
+                markerHeight="7"
+                refX="6"
+                refY="3.5"
+                orient="auto"
+              >
+                <path d="M0 0 L7 3.5 L0 7 Z" fill="#1F5C4A" />
+              </marker>
+            </defs>
+            {geom.curves.map((d, i) => (
+              <motion.path
+                key={SOURCES[i].id}
+                d={d}
+                stroke="#78966A"
+                strokeWidth="1.35"
+                strokeLinecap="round"
+                initial={false}
+                animate={
+                  reduce || go
+                    ? { pathLength: 1, opacity: 0.72 }
+                    : { pathLength: 0, opacity: 0 }
+                }
+                transition={
+                  reduce
+                    ? { duration: 0 }
+                    : {
+                        pathLength: {
+                          duration: T.pathDuration,
+                          delay: T.pathDelay + i * 0.03,
+                          ease: EASE,
+                        },
+                        opacity: {
+                          duration: 0.2,
+                          delay: T.pathDelay + i * 0.03,
+                        },
+                      }
+                }
+              />
+            ))}
             <motion.path
-              key={SOURCES[i].id}
-              d={d}
-              stroke="#78966A"
-              strokeWidth="1.35"
+              d={geom.arrow}
+              stroke="#1F5C4A"
+              strokeWidth="1.75"
               strokeLinecap="round"
-              initial={reduce ? false : { pathLength: 0, opacity: 0 }}
-              whileInView={
-                reduce ? undefined : { pathLength: 1, opacity: 0.72 }
+              markerEnd="url(#frag-arrow-motion)"
+              initial={false}
+              animate={
+                reduce || go
+                  ? { pathLength: 1, opacity: 0.92 }
+                  : { pathLength: 0, opacity: 0 }
               }
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.65, delay: 0.1 + i * 0.05 }}
-              style={reduce ? { opacity: 0.62 } : undefined}
+              transition={
+                reduce
+                  ? { duration: 0 }
+                  : {
+                      duration: T.finaleDuration * 0.85,
+                      delay: T.finaleDelay,
+                      ease: EASE,
+                    }
+              }
             />
-          ))}
-          <motion.path
-            d={geom.arrow}
-            stroke="#1F5C4A"
-            strokeWidth="1.75"
-            strokeLinecap="round"
-            markerEnd="url(#frag-arrow-v2)"
-            initial={reduce ? false : { pathLength: 0, opacity: 0 }}
-            whileInView={reduce ? undefined : { pathLength: 1, opacity: 0.92 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.4, delay: 0.45 }}
-            style={reduce ? { opacity: 0.85 } : undefined}
-          />
-        </svg>
-      ) : null}
+          </svg>
+        ) : null}
+      </div>
     </div>
   )
 }
 
-function DiagramMobile({ reduce: _reduce }: { reduce: boolean | null }) {
+function DiagramMobile({ reduce }: { reduce: boolean }) {
+  const { rootRef, go } = useDiagramEntrance(reduce)
+
   return (
-    <div className="md:hidden">
+    <div ref={rootRef} className="md:hidden">
       <div className="flex flex-col gap-2.5">
-        {SOURCES.map((source) => (
-          <div
+        {SOURCES.map((source, i) => (
+          <motion.div
             key={source.id}
             style={{ marginLeft: Math.min(source.offsetPx, 16) }}
+            initial={false}
+            animate={
+              reduce || go
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0.62, y: 8 }
+            }
+            transition={
+              reduce
+                ? { duration: 0 }
+                : {
+                    duration: T.cardDuration,
+                    delay: i * T.cardStagger,
+                    ease: EASE,
+                  }
+            }
           >
             <SourceCard source={source} />
-          </div>
+          </motion.div>
         ))}
       </div>
 
       <div className="relative my-5 flex flex-col items-center" aria-hidden>
-        <div className="h-8 w-px bg-moss/45" />
-        <HubMark className="h-10 w-10 ring-4" />
+        <svg width="4" height="32" className="overflow-visible" aria-hidden>
+          <motion.path
+            d="M2 0 V32"
+            stroke="#78966A"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            initial={false}
+            animate={
+              reduce || go
+                ? { pathLength: 1, opacity: 0.7 }
+                : { pathLength: 0, opacity: 0 }
+            }
+            transition={
+              reduce
+                ? { duration: 0 }
+                : {
+                    duration: T.pathDuration * 0.55,
+                    delay: T.pathDelay,
+                    ease: EASE,
+                  }
+            }
+          />
+        </svg>
+
+        <HubMark go={go} reduce={reduce} className="h-10 w-10 ring-4" />
+
         <div className="flex h-8 flex-col items-center justify-end">
-          <div className="h-full w-px bg-evergreen/50" />
-          <span className="block h-0 w-0 border-x-[5px] border-t-[7px] border-x-transparent border-t-evergreen" />
+          <svg width="4" height="24" className="overflow-visible" aria-hidden>
+            <motion.path
+              d="M2 0 V18"
+              stroke="#1F5C4A"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              initial={false}
+              animate={
+                reduce || go
+                  ? { pathLength: 1, opacity: 0.9 }
+                  : { pathLength: 0, opacity: 0 }
+              }
+              transition={
+                reduce
+                  ? { duration: 0 }
+                  : {
+                      duration: T.finaleDuration * 0.7,
+                      delay: T.finaleDelay,
+                      ease: EASE,
+                    }
+              }
+            />
+          </svg>
+          <motion.span
+            className="block h-0 w-0 border-x-[5px] border-t-[7px] border-x-transparent border-t-evergreen"
+            initial={false}
+            animate={reduce || go ? { opacity: 1 } : { opacity: 0 }}
+            transition={
+              reduce
+                ? { duration: 0 }
+                : { duration: 0.25, delay: T.finaleDelay + 0.25, ease: EASE }
+            }
+          />
         </div>
       </div>
 
-      <ReadinessDestination />
+      <motion.div
+        initial={false}
+        animate={
+          reduce || go ? { opacity: 1, y: 0 } : { opacity: 0.58, y: 10 }
+        }
+        transition={
+          reduce
+            ? { duration: 0 }
+            : {
+                duration: T.finaleDuration,
+                delay: T.finaleDelay,
+                ease: EASE,
+              }
+        }
+      >
+        <ReadinessDestination />
+      </motion.div>
     </div>
   )
 }
 
 export function FragmentationSection() {
-  const reduce = useReducedMotion()
+  const reduceMotion = useReducedMotion()
+  const reduce = Boolean(reduceMotion)
 
   return (
     <section className="scroll-mt-24 border-t border-stone/60 bg-white">
-      {/*
-        Copy stays left; diagram gets the wider track so the convergence
-        corridor can breathe (reference proportions — not a half-width squeeze).
-      */}
       <div className="mx-auto grid max-w-[1280px] items-center gap-10 px-5 py-16 sm:px-8 sm:py-24 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-12 xl:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] xl:gap-16">
         <motion.div
           variants={fadeUp}
