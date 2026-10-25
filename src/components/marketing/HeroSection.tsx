@@ -1,5 +1,6 @@
 'use client'
 
+import { HeroProductReveal } from '@/components/hero/HeroProductReveal'
 import { StaticProductBackground } from '@/components/hero/StaticProductBackground'
 import { ReadinessOverviewVisual } from '@/components/marketing/visuals'
 import { Button } from '@/components/ui/button'
@@ -66,8 +67,10 @@ export function HeroSection() {
               </p>
             </div>
 
-            <div className="hero-rise delay-5 min-w-0 w-full justify-self-stretch">
-              <ReadinessOverviewVisual className="w-full border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]" />
+            <div className="min-w-0 w-full justify-self-stretch">
+              <HeroProductReveal>
+                <ReadinessOverviewVisual className="w-full border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]" />
+              </HeroProductReveal>
             </div>
           </div>
         </div>

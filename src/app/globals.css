@@ -78,6 +78,133 @@
   animation-delay: 360ms;
 }
 
+/*
+ * Hero Concept B — Layered Product Reveal (~2.2s, once).
+ * Establish 0–300 · Align 300–1500 · Resolve 1500–2200 · static.
+ * Percentages of 2200ms: 300→13.6%, 1500→68.2%.
+ */
+.hero-product-reveal {
+  --hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --hero-reveal-duration: 2.2s;
+  --layer-1-x: -32px;
+  --layer-1-y: -22px;
+  --layer-2-x: -16px;
+  --layer-2-y: -10px;
+  --dash-y: 12px;
+  isolation: isolate;
+}
+
+@media (max-width: 1279px) {
+  .hero-product-reveal {
+    --layer-1-x: -20px;
+    --layer-1-y: -14px;
+    --layer-2-x: -10px;
+    --layer-2-y: -6px;
+    --dash-y: 8px;
+  }
+}
+
+.hero-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 18px;
+  pointer-events: none;
+  border: 1px solid rgba(120, 150, 106, 0.38);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.hero-layer-a {
+  background:
+    linear-gradient(
+      152deg,
+      rgba(237, 242, 234, 0.28) 0%,
+      rgba(120, 150, 106, 0.2) 48%,
+      rgba(31, 92, 74, 0.22) 100%
+    );
+  animation: hero-layer-a var(--hero-reveal-duration) var(--hero-ease) both;
+}
+
+.hero-layer-b {
+  background:
+    linear-gradient(
+      160deg,
+      rgba(250, 248, 243, 0.3) 0%,
+      rgba(120, 150, 106, 0.24) 55%,
+      rgba(31, 92, 74, 0.16) 100%
+    );
+  border-color: rgba(31, 92, 74, 0.28);
+  animation: hero-layer-b var(--hero-reveal-duration) var(--hero-ease) both;
+}
+
+.hero-product-stage {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  animation: hero-dash-settle var(--hero-reveal-duration) var(--hero-ease) both;
+}
+
+@keyframes hero-layer-a {
+  0%,
+  13.6% {
+    transform: translate(var(--layer-1-x), var(--layer-1-y));
+    opacity: 0.34;
+  }
+  68.2% {
+    transform: translate(calc(var(--layer-1-x) * 0.18), calc(var(--layer-1-y) * 0.18));
+    opacity: 0.1;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-layer-b {
+  0%,
+  13.6% {
+    transform: translate(var(--layer-2-x), var(--layer-2-y));
+    opacity: 0.44;
+  }
+  68.2% {
+    transform: translate(calc(var(--layer-2-x) * 0.18), calc(var(--layer-2-y) * 0.18));
+    opacity: 0.12;
+  }
+  100% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-dash-settle {
+  0%,
+  13.6% {
+    transform: translateY(var(--dash-y));
+    opacity: 0.88;
+  }
+  68.2% {
+    transform: translateY(calc(var(--dash-y) * 0.2));
+    opacity: 0.97;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile: static final — no layers beyond the viewport */
+@media (max-width: 767px) {
+  .hero-layer {
+    display: none;
+  }
+
+  .hero-product-stage {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .status-chip {
   display: inline-flex;
   align-items: center;
@@ -120,5 +247,15 @@
 
   .hero-rise {
     animation: none;
+  }
+
+  .hero-layer {
+    display: none !important;
+  }
+
+  .hero-product-stage {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
