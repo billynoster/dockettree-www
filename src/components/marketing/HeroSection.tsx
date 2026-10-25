@@ -8,24 +8,26 @@ import { SIGNUP_URL } from '@/lib/site'
 /**
  * Production hero — static product-led composition.
  * Two columns only when width is comfortable; otherwise stack.
+ * Height is content-driven with a soft desktop band (~680–760) so
+ * the next section can peek; never locked to 100svh (no clip traps).
  */
 export function HeroSection() {
   return (
     <section
-      className="relative min-h-[100svh] overflow-x-clip bg-evergreen-deep"
+      className="relative overflow-x-clip bg-evergreen-deep"
       aria-label="Hero"
     >
-      <div className="relative min-h-[100svh] overflow-x-clip">
+      <div className="relative overflow-x-clip">
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
           <StaticProductBackground />
         </div>
 
-        <div className="relative z-10 mx-auto flex min-h-[100svh] w-full max-w-[1280px] flex-col justify-center px-5 pt-[76px] pb-10 sm:px-8 sm:pt-[80px] sm:pb-12">
+        <div className="relative z-10 mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[88px] pb-11 sm:px-8 sm:pt-[92px] sm:pb-12 xl:min-h-[700px] xl:pb-14 2xl:min-h-[740px]">
           {/*
             Stack by default. Two columns from xl (1280) so mid laptop widths
             never squeeze text under a scaled dashboard.
           */}
-          <div className="grid w-full grid-cols-1 items-center gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] xl:gap-12">
+          <div className="grid w-full grid-cols-1 items-center gap-7 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] xl:gap-10">
             <div className="min-w-0 max-w-xl text-ivory xl:max-w-none">
               <p className="hero-rise font-display text-[0.72rem] font-semibold tracking-[0.2em] text-ivory/75 uppercase sm:text-xs">
                 Vendor readiness for property operations
