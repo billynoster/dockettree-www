@@ -1,12 +1,10 @@
 /**
- * Prototype D — quiet product-led atmosphere.
- * Deep Evergreen + subtle Moss radial; optional faint static paths
- * on the right only (no nodes, particles, or motion).
+ * Production hero atmosphere — deep Evergreen with subtle Moss radial
+ * behind the product column and faint static paths on the right.
  */
 export function StaticProductBackground() {
   return (
     <div className="absolute inset-0 bg-evergreen-deep">
-      {/* Soft moss illumination behind the product column */}
       <div
         className="absolute inset-0"
         style={{
@@ -14,7 +12,6 @@ export function StaticProductBackground() {
             'radial-gradient(ellipse 55% 70% at 72% 48%, rgba(120,150,106,0.22) 0%, rgba(31,92,74,0.12) 38%, rgba(18,61,49,0) 72%)',
         }}
       />
-      {/* Extremely faint intentional branches — right side only, static */}
       <svg
         className="absolute inset-0 h-full w-full"
         viewBox="0 0 1280 720"
@@ -26,7 +23,7 @@ export function StaticProductBackground() {
           stroke="#78966A"
           strokeLinecap="round"
           strokeLinejoin="round"
-          opacity="0.22"
+          opacity="0.2"
         >
           <path
             d="M 720 360 C 820 350, 940 365, 1120 400"
@@ -43,11 +40,9 @@ export function StaticProductBackground() {
           <path
             d="M 880 300 C 960 320, 1040 355, 1140 390"
             strokeWidth="0.9"
-            opacity="0.85"
           />
         </g>
       </svg>
-      {/* Keep headline side clean */}
       <div
         className="absolute inset-y-0 left-0 w-[52%] max-w-[640px]"
         style={{

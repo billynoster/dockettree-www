@@ -29,10 +29,10 @@ export function getDemoExpirations(
         v.nextExpiration &&
         v.days != null &&
         v.days >= 0 &&
-        v.days <= 45,
+        v.days <= 60,
     )
     .sort((a, b) => (a.days ?? 999) - (b.days ?? 999))
-    .slice(0, 3)
+    .slice(0, 4)
     .map((v) => ({
       vendor: v.name,
       document:

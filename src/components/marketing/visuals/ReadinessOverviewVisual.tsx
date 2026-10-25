@@ -73,14 +73,14 @@ export function ReadinessOverviewVisual({ className, compact }: Props) {
     >
       <div
         ref={rootRef}
-        className={cn('p-3.5 sm:p-5', compact && 'p-3 sm:p-3.5')}
+        className={cn('p-3 sm:p-4', compact && 'p-2.5 sm:p-3')}
       >
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-2.5">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-2">
           {cards.map((card, i) => (
             <motion.div
               key={card.key}
               className={cn(
-                'flex min-h-[4.75rem] flex-col justify-between rounded-xl px-3 py-2.5 sm:min-h-[5.25rem]',
+                'flex min-h-[4.25rem] flex-col justify-between rounded-xl px-2.5 py-2 sm:min-h-[4.75rem] sm:px-3 sm:py-2.5',
                 card.className,
               )}
               initial={reduce ? false : { opacity: 0, y: 8 }}
@@ -108,16 +108,16 @@ export function ReadinessOverviewVisual({ className, compact }: Props) {
           ))}
         </div>
 
-        <div className="mt-3.5 grid gap-3 lg:grid-cols-[1.2fr_0.8fr] lg:gap-3.5">
-          <div className="rounded-xl border border-stone/80 bg-white p-3 sm:p-3.5">
+        <div className="mt-3 grid items-start gap-2.5 lg:grid-cols-[1.25fr_0.85fr] lg:gap-2.5">
+          <div className="rounded-xl border border-stone/80 bg-white p-2.5 sm:p-3">
             <p className="font-display text-[10px] font-semibold tracking-[0.14em] text-slate uppercase">
               Needs attention
             </p>
-            <ul className="mt-2.5 space-y-1.5">
+            <ul className="mt-2 space-y-1">
               {attention.map((v, i) => (
                 <motion.li
                   key={v.id}
-                  className="flex items-center justify-between gap-2 rounded-lg bg-ivory px-2.5 py-2"
+                  className="flex items-center justify-between gap-2 rounded-lg bg-ivory px-2.5 py-1.5"
                   initial={reduce ? false : { opacity: 0, x: -6 }}
                   animate={
                     active || reduce
@@ -150,15 +150,15 @@ export function ReadinessOverviewVisual({ className, compact }: Props) {
             </ul>
           </div>
 
-          <div className="rounded-xl bg-pale-moss/60 p-3 sm:p-3.5">
+          <div className="rounded-xl bg-pale-moss/60 p-2.5 sm:p-3">
             <p className="font-display text-[10px] font-semibold tracking-[0.14em] text-slate uppercase">
               Upcoming expirations
             </p>
-            <ul className="mt-2.5 space-y-1.5">
+            <ul className="mt-2 space-y-1">
               {expirations.map((item) => (
                 <li
                   key={item.vendor}
-                  className="rounded-lg bg-white/80 px-2.5 py-2"
+                  className="rounded-lg bg-white/80 px-2.5 py-1.5"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <p className="truncate text-sm font-medium text-charcoal">

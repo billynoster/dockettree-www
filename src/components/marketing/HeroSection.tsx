@@ -1,211 +1,39 @@
 'use client'
 
-import { useReducedMotion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
-
-import { ConnectedPathsBackground } from '@/components/hero/ConnectedPathsBackground'
-import { NetworkCanvas } from '@/components/hero/NetworkCanvas'
-import { NetworkFallback } from '@/components/hero/NetworkFallback'
 import { StaticProductBackground } from '@/components/hero/StaticProductBackground'
 import { ReadinessOverviewVisual } from '@/components/marketing/visuals'
 import { Button } from '@/components/ui/button'
-import {
-  DEFAULT_HERO_MOTION,
-  HERO_MOTION_OPTIONS,
-  HERO_MOTION_PARAM,
-  type HeroMotionMode,
-  isWebGLHeroMotion,
-  parseHeroMotion,
-} from '@/lib/heroMotion'
 import { SIGNUP_URL } from '@/lib/site'
-import { cn } from '@/lib/utils'
 
-function clamp01(n: number) {
-  return Math.min(1, Math.max(0, n))
-}
-
-function readMotionFromLocation(): HeroMotionMode {
-  if (typeof window === 'undefined') return DEFAULT_HERO_MOTION
-  const params = new URLSearchParams(window.location.search)
-  return parseHeroMotion(params.get(HERO_MOTION_PARAM))
-}
-
-function writeMotionToLocation(mode: HeroMotionMode) {
-  if (typeof window === 'undefined') return
-  const url = new URL(window.location.href)
-  url.searchParams.set(HERO_MOTION_PARAM, mode)
-  window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
-}
-
+/**
+ * Production hero — static product-led composition.
+ * No Three.js, no motion prototypes, no toggle UI.
+ */
 export function HeroSection() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const reduce = useReducedMotion()
-  const reducedMotion = Boolean(reduce)
-  const [mounted, setMounted] = useState(false)
-  const [webglOk, setWebglOk] = useState(true)
-  const [simplified, setSimplified] = useState(false)
-  const [motionMode, setMotionMode] =
-    useState<HeroMotionMode>(DEFAULT_HERO_MOTION)
-  const [scrollProgress, setScrollProgress] = useState(0.12)
-  const [autoProgress, setAutoProgress] = useState(0.12)
-  const progress = reducedMotion
-    ? 1
-    : Math.max(scrollProgress, autoProgress)
-
-  const usePaths = motionMode === 'paths'
-  const useStatic = motionMode === 'static'
-  const useWebGL = isWebGLHeroMotion(motionMode)
-
-  useEffect(() => {
-    setMounted(true)
-    setMotionMode(readMotionFromLocation())
-    try {
-      const canvas = document.createElement('canvas')
-      const gl =
-        canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
-      setWebglOk(Boolean(gl))
-    } catch {
-      setWebglOk(false)
-    }
-
-    const mq = window.matchMedia('(max-width: 768px)')
-    const apply = () => setSimplified(mq.matches)
-    apply()
-    mq.addEventListener('change', apply)
-    return () => mq.removeEventListener('change', apply)
-  }, [])
-
-  useEffect(() => {
-    if (reducedMotion || useStatic) {
-      setScrollProgress(1)
-      setAutoProgress(1)
-      return
-    }
-
-    const update = () => {
-      const el = sectionRef.current
-      if (!el) return
-      const rect = el.getBoundingClientRect()
-      const total = el.offsetHeight - window.innerHeight
-      const scrolled = clamp01(-rect.top / Math.max(total, 1))
-      setScrollProgress(0.12 + clamp01(scrolled / 0.5) * 0.88)
-    }
-
-    update()
-    window.addEventListener('scroll', update, { passive: true })
-    window.addEventListener('resize', update)
-    return () => {
-      window.removeEventListener('scroll', update)
-      window.removeEventListener('resize', update)
-    }
-  }, [reducedMotion, useStatic])
-
-  // One-shot assemble so chips replay settle→hold without scroll-jacking.
-  useEffect(() => {
-    if (reducedMotion || usePaths || useStatic) {
-      if (usePaths || useStatic) setAutoProgress(1)
-      return
-    }
-    setAutoProgress(0.12)
-    const duration = motionMode === 'reveal' ? 4200 : 2800
-    const start = performance.now()
-    let raf = 0
-    const tick = (now: number) => {
-      const t = clamp01((now - start) / duration)
-      const eased = t * t * (3 - 2 * t)
-      setAutoProgress(0.12 + eased * 0.88)
-      if (t < 1) raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [motionMode, reducedMotion, usePaths, useStatic])
-
-  const selectMotion = (mode: HeroMotionMode) => {
-    setMotionMode(mode)
-    writeMotionToLocation(mode)
-  }
-
   return (
     <section
-      ref={sectionRef}
-      className={cn(
-        'relative bg-evergreen-deep',
-        useStatic ? 'min-h-[100svh]' : 'h-[132vh] sm:h-[140vh]',
-      )}
+      className="relative min-h-[100svh] bg-evergreen-deep"
       aria-label="Hero"
     >
-      <div
-        className={cn(
-          'overflow-hidden',
-          useStatic ? 'relative min-h-[100svh]' : 'sticky top-0 h-[100svh]',
-        )}
-      >
+      <div className="relative min-h-[100svh] overflow-hidden">
         <div className="absolute inset-0" aria-hidden="true">
-          {useStatic ? (
-            <StaticProductBackground />
-          ) : usePaths ? (
-            <ConnectedPathsBackground
-              key="paths"
-              reducedMotion={reducedMotion}
-            />
-          ) : (
-            <>
-              <NetworkFallback
-                progress={progress}
-                motionMode={useWebGL ? motionMode : 'pulse'}
-              />
-              {mounted && webglOk && !simplified && useWebGL && (
-                <div
-                  className="absolute inset-0 transition-opacity duration-500"
-                  style={{
-                    opacity: reducedMotion
-                      ? 0.55
-                      : 0.42 + Math.min(1, progress) * 0.28,
-                  }}
-                >
-                  <NetworkCanvas
-                    progress={reducedMotion ? 1 : progress}
-                    reducedMotion={reducedMotion}
-                    motionMode={motionMode}
-                    simplified={simplified}
-                  />
-                </div>
-              )}
-            </>
-          )}
-          {!useStatic ? (
-            <div
-              className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(18,61,49,0.95)_0%,rgba(18,61,49,0.82)_36%,rgba(18,61,49,0.45)_62%,rgba(18,61,49,0.28)_100%)] transition-opacity duration-500"
-              style={{
-                opacity: usePaths
-                  ? reducedMotion
-                    ? 0.62
-                    : 0.38
-                  : reducedMotion
-                    ? 1
-                    : 1 - Math.max(0, progress - 0.75) * 0.35,
-              }}
-            />
-          ) : null}
+          <StaticProductBackground />
         </div>
 
-        <div className="relative z-10 mx-auto flex h-full min-h-[100svh] max-w-[1280px] flex-col justify-center px-5 pt-[76px] pb-10 sm:px-8 sm:pt-[80px] sm:pb-12">
-          <div
-            className={cn(
-              'grid items-center gap-8 lg:gap-12',
-              useStatic
-                ? 'lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]'
-                : 'lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]',
-            )}
-          >
+        <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-[1280px] flex-col justify-center px-5 pt-[76px] pb-10 sm:px-8 sm:pt-[80px] sm:pb-12">
+          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-10 xl:gap-12">
             <div className="max-w-xl text-ivory">
               <p className="hero-rise font-display text-[0.72rem] font-semibold tracking-[0.2em] text-ivory/75 uppercase sm:text-xs">
                 Vendor readiness for property operations
               </p>
 
-              <h1 className="hero-rise delay-1 mt-3 font-display text-[2.15rem] leading-[1.08] font-semibold tracking-tight text-balance sm:text-5xl lg:text-[3.55rem] lg:leading-[1.05]">
-                Know who can work.
-                <br className="hidden sm:block" /> Know what’s next.
+              <h1 className="hero-rise delay-1 mt-3 font-display text-[2.15rem] leading-[1.08] font-semibold tracking-tight sm:text-5xl lg:text-[3.4rem] lg:leading-[1.05] xl:text-[3.55rem]">
+                <span className="block lg:whitespace-nowrap">
+                  Know who can work.
+                </span>
+                <span className="block lg:whitespace-nowrap">
+                  Know what’s next.
+                </span>
               </h1>
 
               <p className="hero-rise delay-2 mt-4 max-w-md text-base leading-relaxed text-ivory/88 sm:text-lg">
@@ -224,74 +52,13 @@ export function HeroSection() {
               </div>
 
               <p className="hero-rise delay-4 mt-3 text-sm text-ivory/68">
-                30-day free trial · Start in the app
+                30-day free trial
               </p>
             </div>
 
-            <div
-              className={cn(
-                'hero-rise delay-5 relative mx-auto w-full',
-                useStatic
-                  ? 'max-w-xl scale-100 sm:max-w-2xl lg:max-w-none lg:origin-right lg:scale-[1.06] xl:scale-[1.08]'
-                  : 'max-w-xl lg:max-w-none',
-              )}
-            >
-              {useStatic ? null : (
-                <div
-                  className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] bg-[radial-gradient(circle_at_60%_40%,rgba(120,150,106,0.28),transparent_65%)]"
-                  aria-hidden
-                />
-              )}
-              <ReadinessOverviewVisual
-                className={
-                  useStatic
-                    ? 'border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]'
-                    : 'shadow-[0_28px_70px_rgba(0,0,0,0.38)]'
-                }
-              />
-              {useStatic ? null : (
-                <p className="mt-3 text-center text-xs font-medium tracking-[0.12em] text-amber-gold/90 uppercase lg:text-left">
-                  Scattered documents → one connected readiness view
-                </p>
-              )}
+            <div className="hero-rise delay-5 relative mx-auto w-full max-w-xl sm:max-w-2xl lg:max-w-none lg:origin-right lg:scale-[1.06] xl:scale-[1.08]">
+              <ReadinessOverviewVisual className="border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]" />
             </div>
-          </div>
-        </div>
-
-        {/* Mode switcher — always available so Static can reach Pulse/Reveal/Paths */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 flex justify-center px-4 sm:bottom-6 sm:justify-start sm:px-8">
-          <div
-            className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-ivory/20 bg-evergreen-deep/75 px-2 py-1.5 backdrop-blur-sm"
-            role="group"
-            aria-label="Hero network motion prototype"
-          >
-            <span className="hidden px-1.5 text-[10px] font-semibold tracking-[0.14em] text-ivory/55 uppercase sm:inline">
-              {useStatic ? 'Hero' : 'Motion'}
-            </span>
-            {HERO_MOTION_OPTIONS.map((opt) => {
-              const active = motionMode === opt.id
-              const href = `?${HERO_MOTION_PARAM}=${opt.id}`
-              return (
-                <a
-                  key={opt.id}
-                  href={href}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    selectMotion(opt.id)
-                  }}
-                  className={cn(
-                    'rounded-md px-2.5 py-1 text-[11px] font-semibold tracking-wide transition-colors sm:text-xs',
-                    active
-                      ? 'bg-amber-gold text-charcoal'
-                      : 'bg-ivory/10 text-ivory/85 hover:bg-ivory/18',
-                  )}
-                  aria-current={active ? 'true' : undefined}
-                >
-                  {opt.short}
-                  <span className="sr-only"> — {opt.label}</span>
-                </a>
-              )
-            })}
           </div>
         </div>
       </div>
