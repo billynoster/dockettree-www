@@ -127,6 +127,56 @@ function attentionChipClass(status: DashboardAttentionRow['status']) {
   }
 }
 
+function StatusCardIcon({ id }: { id: string }) {
+  const common = {
+    width: 14,
+    height: 14,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.9,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    'aria-hidden': true as const,
+  }
+  switch (id) {
+    case 'ready':
+      return (
+        <svg {...common}>
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+      )
+    case 'needs':
+      return (
+        <svg {...common}>
+          <path d="M12 9v4" />
+          <path d="M12 17h.01" />
+          <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+        </svg>
+      )
+    case 'review':
+      return (
+        <svg {...common}>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v5l3 2" />
+        </svg>
+      )
+    case 'expiring':
+      return (
+        <svg {...common}>
+          <rect x="3" y="5" width="18" height="16" rx="2" />
+          <path d="M3 10h18" />
+          <path d="M8 3v4" />
+          <path d="M16 3v4" />
+          <circle cx="15.5" cy="15.5" r="2.5" />
+          <path d="M15.5 14.2v1.5l1 0.7" />
+        </svg>
+      )
+    default:
+      return null
+  }
+}
+
 type Props = {
   className?: string
 }
@@ -264,8 +314,8 @@ export function InteractiveDashboardVisual({ className }: Props) {
 
         {/* Main */}
         <div className="flex min-w-0 flex-col bg-[#fbfaf7]">
-          <header className="flex items-center gap-3 border-b border-stone bg-white px-3 py-2.5 sm:px-4">
-            <div className="mx-auto flex h-9 w-full max-w-md items-center gap-2 rounded-full border border-stone bg-[#fbfaf7] px-3 text-[12.5px] text-slate">
+          <header className="flex items-center justify-end gap-2.5 border-b border-stone bg-white px-3 py-2.5 sm:gap-3 sm:px-4">
+            <div className="flex h-9 w-full max-w-[16.5rem] items-center gap-2 rounded-lg border border-stone bg-white px-3 text-[12.5px] text-slate sm:max-w-xs md:max-w-sm">
               <svg
                 width="14"
                 height="14"
@@ -278,35 +328,35 @@ export function InteractiveDashboardVisual({ className }: Props) {
                 <circle cx="11" cy="11" r="7" />
                 <path d="m20 20-3.5-3.5" />
               </svg>
-              <span>Search vendors…</span>
+              <span className="truncate">Search vendors…</span>
             </div>
-            <div className="ml-auto flex shrink-0 items-center gap-2">
-              <span
-                className="hidden h-8 w-8 items-center justify-center rounded-full border border-stone text-slate sm:flex"
-                aria-hidden
+            <span
+              className="hidden h-8 w-8 shrink-0 items-center justify-center text-slate sm:flex"
+              aria-hidden
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
               >
-                <svg
-                  width="14"
-                  height="14"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                >
-                  <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-                  <path d="M10.3 21a1.9 1.9 0 0 0 3.4 0" />
-                </svg>
+                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                <path d="M10.3 21a1.9 1.9 0 0 0 3.4 0" />
+              </svg>
+            </span>
+            <div className="flex shrink-0 items-center gap-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-pale-moss text-[11px] font-bold text-evergreen">
+                {DEMO_SHELL.user.initials}
               </span>
-              <div className="flex items-center gap-1.5">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-pale-moss text-[10px] font-bold text-evergreen">
-                  {DEMO_SHELL.user.initials}
-                </span>
-                <div className="hidden sm:block">
-                  <p className="text-[12px] font-semibold leading-tight">
-                    {DEMO_SHELL.user.name}
-                  </p>
-                  <p className="text-[10px] text-slate">{DEMO_SHELL.user.role}</p>
-                </div>
+              <div className="hidden sm:block">
+                <p className="text-[12px] font-semibold leading-tight text-charcoal">
+                  {DEMO_SHELL.user.name}
+                </p>
+                <p className="text-[10px] leading-tight text-slate">
+                  {DEMO_SHELL.user.role}
+                </p>
               </div>
             </div>
           </header>
@@ -342,23 +392,35 @@ export function InteractiveDashboardVisual({ className }: Props) {
                     setFocusCard((c) => (c === card.id ? null : c))
                   }
                   className={cn(
-                    'rounded-xl border border-stone bg-white p-2.5 transition-shadow sm:p-3',
+                    'rounded-xl border border-stone bg-white p-2.5 transition-shadow sm:p-3.5',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-evergreen focus-visible:ring-offset-2',
                     focusCard === card.id &&
                       'shadow-[0_8px_20px_rgba(32,38,35,0.08)] ring-1 ring-evergreen/20',
                   )}
                 >
-                  <p className="flex items-center gap-1.5 text-[11px] font-semibold sm:text-[12px]">
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="flex items-center gap-1.5 text-[11px] font-semibold text-charcoal sm:text-[12px]">
+                      <span
+                        className={cn('h-1.5 w-1.5 shrink-0 rounded-full', card.dot)}
+                        aria-hidden
+                      />
+                      {card.label}
+                    </p>
                     <span
-                      className={cn('h-1.5 w-1.5 rounded-full', card.dot)}
+                      className={cn(
+                        'flex h-7 w-7 shrink-0 items-center justify-center rounded-full',
+                        card.iconBg,
+                        card.iconFg,
+                      )}
                       aria-hidden
-                    />
-                    {card.label}
-                  </p>
-                  <p className="mt-1 font-display text-2xl font-semibold tracking-tight sm:text-[1.65rem]">
+                    >
+                      <StatusCardIcon id={card.id} />
+                    </span>
+                  </div>
+                  <p className="mt-2 font-display text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
                     {card.n}
                   </p>
-                  <p className="mt-0.5 hidden text-[10px] leading-snug text-slate sm:block">
+                  <p className="mt-1 text-[10px] leading-snug text-slate sm:text-[11px]">
                     {card.hint}
                   </p>
                 </div>

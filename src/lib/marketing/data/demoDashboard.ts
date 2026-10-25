@@ -157,34 +157,42 @@ export function getDashboardStatusCards() {
   const c = getDemoCounts()
   return [
     {
-      id: 'ready',
+      id: 'ready' as const,
       label: 'Ready',
       n: c.ready,
       hint: 'Everything currently required is in place.',
       dot: 'bg-[#2f7d5c]',
+      iconBg: 'bg-[#e6f1eb]',
+      iconFg: 'text-[#2f7d5c]',
     },
     {
-      id: 'needs',
+      id: 'needs' as const,
       label: 'Needs Action',
       n: c.needsAction,
       hint: 'Something needs attention before work can move forward.',
       dot: 'bg-[#c9842f]',
+      iconBg: 'bg-[#fff3d9]',
+      iconFg: 'text-[#c9842f]',
     },
     {
-      id: 'review',
+      id: 'review' as const,
       label: 'In Review',
       n: c.inReview,
       hint: 'Documents or information currently being reviewed.',
       dot: 'bg-[#7a6bb5]',
+      iconBg: 'bg-[#eceaf4]',
+      iconFg: 'text-[#7a6bb5]',
     },
     {
-      id: 'expiring',
+      id: 'expiring' as const,
       label: 'Expiring Soon',
       n: c.expiringSoon,
       hint: 'An active requirement is approaching its expiration date.',
       dot: 'bg-[#b7791f]',
+      iconBg: 'bg-[#f3f1ec]',
+      iconFg: 'text-[#8a7a5c]',
     },
-  ] as const
+  ]
 }
 
 /** Greeting date label — relative “today” for marketing demos. */
