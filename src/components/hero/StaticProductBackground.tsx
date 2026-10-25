@@ -4,7 +4,7 @@
  */
 export function StaticProductBackground() {
   return (
-    <div className="absolute inset-0 bg-evergreen-deep">
+    <div className="absolute inset-0 overflow-hidden bg-evergreen-deep">
       <div
         className="absolute inset-0"
         style={{
@@ -13,7 +13,7 @@ export function StaticProductBackground() {
         }}
       />
       <svg
-        className="absolute inset-0 h-full w-full"
+        className="pointer-events-none absolute inset-0 h-full w-full max-w-none"
         viewBox="0 0 1280 720"
         preserveAspectRatio="xMidYMid slice"
         aria-hidden="true"

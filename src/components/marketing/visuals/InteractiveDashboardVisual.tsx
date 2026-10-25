@@ -212,7 +212,7 @@ export function InteractiveDashboardVisual({ className }: Props) {
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-[18px] border border-stone bg-ivory shadow-[0_28px_64px_rgba(32,38,35,0.1)]',
+        'w-full min-w-0 max-w-full overflow-hidden rounded-[18px] border border-stone bg-ivory shadow-[0_28px_64px_rgba(32,38,35,0.1)]',
         className,
       )}
       role="region"
@@ -224,7 +224,7 @@ export function InteractiveDashboardVisual({ className }: Props) {
         saved.
       </p>
 
-      <div className="grid min-h-[28rem] lg:grid-cols-[13.5rem_minmax(0,1fr)]">
+      <div className="grid min-h-[28rem] min-w-0 lg:grid-cols-[13.5rem_minmax(0,1fr)]">
         {/* Sidebar */}
         <aside className="hidden flex-col border-r border-stone bg-ivory p-3 lg:flex">
           <div className="flex items-center gap-2.5 px-1.5 pb-3">
@@ -429,11 +429,11 @@ export function InteractiveDashboardVisual({ className }: Props) {
 
             <div className="grid gap-2.5 lg:grid-cols-[1.35fr_0.9fr] lg:gap-3">
               <div className="rounded-xl border border-stone bg-white p-2.5 sm:p-3">
-                <div className="flex items-baseline justify-between gap-2">
-                  <p className="font-display text-[10px] font-semibold tracking-[0.12em] text-slate uppercase">
+                <div className="flex min-w-0 items-baseline justify-between gap-2">
+                  <p className="shrink-0 font-display text-[10px] font-semibold tracking-[0.12em] text-slate uppercase">
                     Needs Attention
                   </p>
-                  <p className="text-[10px] text-slate">
+                  <p className="hidden min-w-0 truncate text-[10px] text-slate sm:block">
                     Severity order — expired, corrections, missing, expiring
                   </p>
                 </div>

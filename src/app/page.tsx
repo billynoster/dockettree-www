@@ -14,7 +14,7 @@ export default function HomePage() {
   return (
     <>
       <MarketingHeader />
-      <main>
+      <main className="overflow-x-clip">
         <HeroSection />
         <ProductProofSection />
         <FragmentationSection />
