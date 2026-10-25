@@ -3,6 +3,7 @@
 import { useReducedMotion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 
+import { ConnectedPathsBackground } from '@/components/hero/ConnectedPathsBackground'
 import { NetworkCanvas } from '@/components/hero/NetworkCanvas'
 import { NetworkFallback } from '@/components/hero/NetworkFallback'
 import { ReadinessOverviewVisual } from '@/components/marketing/visuals'
@@ -12,6 +13,7 @@ import {
   HERO_MOTION_OPTIONS,
   HERO_MOTION_PARAM,
   type HeroMotionMode,
+  isWebGLHeroMotion,
   parseHeroMotion,
 } from '@/lib/heroMotion'
 import { SIGNUP_URL } from '@/lib/site'
@@ -48,6 +50,9 @@ export function HeroSection() {
   const progress = reducedMotion
     ? 1
     : Math.max(scrollProgress, autoProgress)
+
+  const usePaths = motionMode === 'paths'
+  const useWebGL = isWebGLHeroMotion(motionMode)
 
   useEffect(() => {
     setMounted(true)
@@ -93,9 +98,12 @@ export function HeroSection() {
     }
   }, [reducedMotion])
 
-  // One-shot assemble so A/B chips replay settle→hold without scroll-jacking.
+  // One-shot assemble so chips replay settle→hold without scroll-jacking.
   useEffect(() => {
-    if (reducedMotion) return
+    if (reducedMotion || usePaths) {
+      if (usePaths) setAutoProgress(1)
+      return
+    }
     setAutoProgress(0.12)
     const duration = motionMode === 'reveal' ? 4200 : 2800
     const start = performance.now()
@@ -108,7 +116,7 @@ export function HeroSection() {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [motionMode, reducedMotion])
+  }, [motionMode, reducedMotion, usePaths])
 
   const selectMotion = (mode: HeroMotionMode) => {
     setMotionMode(mode)
@@ -123,30 +131,46 @@ export function HeroSection() {
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <div className="absolute inset-0" aria-hidden="true">
-          <NetworkFallback progress={progress} motionMode={motionMode} />
-          {mounted && webglOk && !simplified && (
-            <div
-              className="absolute inset-0 transition-opacity duration-500"
-              style={{
-                opacity: reducedMotion
-                  ? 0.55
-                  : 0.42 + Math.min(1, progress) * 0.28,
-              }}
-            >
-              <NetworkCanvas
-                progress={reducedMotion ? 1 : progress}
-                reducedMotion={reducedMotion}
-                motionMode={motionMode}
-                simplified={simplified}
+          {usePaths ? (
+            <ConnectedPathsBackground
+              key="paths"
+              reducedMotion={reducedMotion}
+            />
+          ) : (
+            <>
+              <NetworkFallback
+                progress={progress}
+                motionMode={useWebGL ? motionMode : 'pulse'}
               />
-            </div>
+              {mounted && webglOk && !simplified && useWebGL && (
+                <div
+                  className="absolute inset-0 transition-opacity duration-500"
+                  style={{
+                    opacity: reducedMotion
+                      ? 0.55
+                      : 0.42 + Math.min(1, progress) * 0.28,
+                  }}
+                >
+                  <NetworkCanvas
+                    progress={reducedMotion ? 1 : progress}
+                    reducedMotion={reducedMotion}
+                    motionMode={motionMode}
+                    simplified={simplified}
+                  />
+                </div>
+              )}
+            </>
           )}
           <div
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(18,61,49,0.95)_0%,rgba(18,61,49,0.82)_36%,rgba(18,61,49,0.45)_62%,rgba(18,61,49,0.28)_100%)] transition-opacity duration-500"
             style={{
-              opacity: reducedMotion
-                ? 1
-                : 1 - Math.max(0, progress - 0.75) * 0.35,
+              opacity: usePaths
+                ? reducedMotion
+                  ? 0.72
+                  : 0.55
+                : reducedMotion
+                  ? 1
+                  : 1 - Math.max(0, progress - 0.75) * 0.35,
             }}
           />
         </div>
@@ -196,7 +220,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Prototype A/B switch — compare motion only */}
+        {/* Prototype A/B/C switch — compare motion / background only */}
         <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 flex justify-center px-4 sm:bottom-6 sm:justify-start sm:px-8">
           <div
             className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-ivory/20 bg-evergreen-deep/75 px-2 py-1.5 backdrop-blur-sm"

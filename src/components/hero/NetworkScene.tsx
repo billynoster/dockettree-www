@@ -4,7 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 
-import { type HeroMotionMode, smoothstep } from '@/lib/heroMotion'
+import { type HeroWebGLMotionMode, smoothstep } from '@/lib/heroMotion'
 import {
   NODE_COLORS,
   buildNetwork,
@@ -16,7 +16,7 @@ import {
 type NetworkSceneProps = {
   progress: number
   reducedMotion: boolean
-  motionMode: HeroMotionMode
+  motionMode: HeroWebGLMotionMode
   /** Mobile / simplified: skip traveling pulses, keep morph only. */
   simplified?: boolean
 }
@@ -53,7 +53,7 @@ function NodeMesh({
 }: {
   node: NetworkNode
   progress: number
-  motionMode: HeroMotionMode
+  motionMode: HeroWebGLMotionMode
   reducedMotion: boolean
 }) {
   const ref = useRef<THREE.Mesh>(null)
@@ -100,7 +100,7 @@ function EdgeLines({
   nodes: NetworkNode[]
   edges: NetworkEdge[]
   progress: number
-  motionMode: HeroMotionMode
+  motionMode: HeroWebGLMotionMode
 }) {
   const lineRef = useRef<THREE.LineSegments>(null)
   const positions = useMemo(

@@ -1,4 +1,7 @@
-export type HeroMotionMode = 'pulse' | 'reveal'
+export type HeroMotionMode = 'pulse' | 'reveal' | 'paths'
+
+/** Three.js variants only — paths uses SVG. */
+export type HeroWebGLMotionMode = 'pulse' | 'reveal'
 
 export const HERO_MOTION_PARAM = 'heroMotion'
 
@@ -13,15 +16,27 @@ export const HERO_MOTION_OPTIONS = [
     label: 'Branch reveal',
     short: 'Reveal',
   },
+  {
+    id: 'paths' as const,
+    label: 'SVG connected paths',
+    short: 'Paths',
+  },
 ] as const
 
 /** Default when Billy lands without choosing — safer settle+hold path. */
 export const DEFAULT_HERO_MOTION: HeroMotionMode = 'pulse'
 
 export function parseHeroMotion(value: string | null | undefined): HeroMotionMode {
+  if (value === 'paths' || value === 'svg' || value === 'c') return 'paths'
   if (value === 'reveal' || value === 'branch' || value === 'b') return 'reveal'
   if (value === 'pulse' || value === 'a') return 'pulse'
   return DEFAULT_HERO_MOTION
+}
+
+export function isWebGLHeroMotion(
+  mode: HeroMotionMode,
+): mode is HeroWebGLMotionMode {
+  return mode === 'pulse' || mode === 'reveal'
 }
 
 /** Branch reveal order (Activity last). Matches readiness topology labels. */

@@ -12,12 +12,12 @@ import {
 } from 'react'
 
 import { NetworkScene } from '@/components/hero/NetworkScene'
-import type { HeroMotionMode } from '@/lib/heroMotion'
+import type { HeroWebGLMotionMode } from '@/lib/heroMotion'
 
 type NetworkCanvasProps = {
   progress: number
   reducedMotion: boolean
-  motionMode: HeroMotionMode
+  motionMode: HeroWebGLMotionMode
   simplified?: boolean
 }
 

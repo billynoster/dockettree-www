@@ -1,4 +1,4 @@
-import type { HeroMotionMode } from '@/lib/heroMotion'
+import type { HeroWebGLMotionMode } from '@/lib/heroMotion'
 import { smoothstep } from '@/lib/heroMotion'
 
 /** Non-WebGL atmosphere so the hero never looks empty. Intentional hub + branches. */
@@ -7,7 +7,7 @@ export function NetworkFallback({
   motionMode = 'pulse',
 }: {
   progress: number
-  motionMode?: HeroMotionMode
+  motionMode?: HeroWebGLMotionMode
 }) {
   const p = Math.min(1, Math.max(0, progress))
 

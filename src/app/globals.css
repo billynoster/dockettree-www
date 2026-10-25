@@ -78,6 +78,22 @@
   animation-delay: 360ms;
 }
 
+/* Prototype C — SVG connected paths: one-time stroke reveal, then hold */
+@keyframes hero-path-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.hero-path-draw path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hero-path-draw 1.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
 .status-chip {
   display: inline-flex;
   align-items: center;
@@ -120,5 +136,10 @@
 
   .hero-rise {
     animation: none;
+  }
+
+  .hero-path-draw path {
+    animation: none;
+    stroke-dashoffset: 0;
   }
 }
