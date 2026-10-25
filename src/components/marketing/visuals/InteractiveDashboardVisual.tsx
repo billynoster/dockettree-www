@@ -408,7 +408,7 @@ export function InteractiveDashboardVisual({ className }: Props) {
                     </p>
                     <span
                       className={cn(
-                        'flex h-7 w-7 shrink-0 items-center justify-center rounded-full',
+                        'flex h-7 w-7 shrink-0 items-center justify-center rounded-md',
                         card.iconBg,
                         card.iconFg,
                       )}
