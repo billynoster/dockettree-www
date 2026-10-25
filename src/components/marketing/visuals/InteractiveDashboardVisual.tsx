@@ -129,8 +129,8 @@ function attentionChipClass(status: DashboardAttentionRow['status']) {
 
 function StatusCardIcon({ id }: { id: string }) {
   const common = {
-    width: 14,
-    height: 14,
+    width: 12,
+    height: 12,
     viewBox: '0 0 24 24',
     fill: 'none',
     stroke: 'currentColor',
@@ -398,7 +398,7 @@ export function InteractiveDashboardVisual({ className }: Props) {
                       'shadow-[0_8px_20px_rgba(32,38,35,0.08)] ring-1 ring-evergreen/20',
                   )}
                 >
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center justify-between gap-2">
                     <p className="flex items-center gap-1.5 text-[11px] font-semibold text-charcoal sm:text-[12px]">
                       <span
                         className={cn('h-1.5 w-1.5 shrink-0 rounded-full', card.dot)}
@@ -408,7 +408,7 @@ export function InteractiveDashboardVisual({ className }: Props) {
                     </p>
                     <span
                       className={cn(
-                        'flex h-7 w-7 shrink-0 items-center justify-center rounded-md',
+                        'flex h-6 w-6 shrink-0 items-center justify-center rounded-md',
                         card.iconBg,
                         card.iconFg,
                       )}
