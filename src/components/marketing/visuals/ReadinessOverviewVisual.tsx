@@ -23,6 +23,8 @@ type Props = {
    * `none` — default; keeps subtle in-view motion when not reduced.
    */
   reveal?: 'none' | 'intelligent'
+  /** Hero-only: enables pre-hydration FOUC guard for `?hero=intelligent`. */
+  heroDashboard?: boolean
 }
 
 /** Hero: interactive readiness overview — single benefit: know who can work. */
@@ -30,6 +32,7 @@ export function ReadinessOverviewVisual({
   className,
   compact,
   reveal = 'none',
+  heroDashboard = false,
 }: Props) {
   const rootRef = useRef<HTMLDivElement>(null)
   const active = useVisualMotionActive(rootRef)
@@ -81,6 +84,7 @@ export function ReadinessOverviewVisual({
       className={className}
       shellClassName={intelligent ? 'hero-intel-shell' : undefined}
       headerClassName={intelligent ? 'hero-intel-header' : undefined}
+      heroDashboard={heroDashboard}
       title="Readiness overview"
       tone="dark"
       showCaption={!compact}

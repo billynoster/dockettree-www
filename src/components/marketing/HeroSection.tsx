@@ -30,6 +30,7 @@ export function HeroSection() {
     <ReadinessOverviewVisual
       className="w-full border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]"
       reveal={variant === 'intelligent' ? 'intelligent' : 'none'}
+      heroDashboard
     />
   )
 

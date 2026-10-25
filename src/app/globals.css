@@ -209,7 +209,18 @@
  * Intelligent Dashboard Reveal (~2s, once) — `?hero=intelligent`
  * Shell+header 0–250 · KPIs L→R 250–1150 · panels 1050–1750 · settle ~2000.
  * Opacity/transform only — layout space reserved from first frame (no CLS).
+ *
+ * FOUC guard: static HTML paints the dashboard fully visible, then React’s
+ * useLayoutEffect swaps in `hero-intel-*` and animations restart from opacity 0
+ * (flash). Boot script sets html[data-hero=intelligent] before paint; hide the
+ * dashboard until `.hero-intel-shell` mounts so the first painted frame matches
+ * the animation’s `from` keyframe. Reduced-motion skips the guard (final state).
  */
+html[data-hero='intelligent'] [data-hero-dashboard]:not(.hero-intel-shell) {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
 .hero-intel-shell {
   --intel-ease: cubic-bezier(0.22, 1, 0.36, 1);
   animation: hero-intel-in 250ms var(--intel-ease) both;
@@ -321,6 +332,11 @@
 
   .hero-product-stage {
     animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  html[data-hero='intelligent'] [data-hero-dashboard]:not(.hero-intel-shell) {
     opacity: 1 !important;
     transform: none !important;
   }

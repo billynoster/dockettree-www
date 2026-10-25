@@ -22,6 +22,11 @@ type VisualShellProps = {
   /** When false, omit the small illustrative caption (e.g. dense hero). */
   showCaption?: boolean
   tone?: 'light' | 'dark'
+  /**
+   * Marks the hero dashboard for the pre-hydration FOUC guard
+   * (`html[data-hero=intelligent] [data-hero-dashboard]`).
+   */
+  heroDashboard?: boolean
 }
 
 /** Shared chrome for marketing product compositions — not a nested browser. */
@@ -33,6 +38,7 @@ export function VisualShell({
   title,
   showCaption = true,
   tone = 'light',
+  heroDashboard = false,
 }: VisualShellProps) {
   return (
     <div
@@ -42,6 +48,7 @@ export function VisualShell({
         className,
         shellClassName,
       )}
+      {...(heroDashboard ? { 'data-hero-dashboard': '' } : {})}
     >
       {title ? (
         <div
