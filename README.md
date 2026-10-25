@@ -54,10 +54,24 @@ Default is the approved **static** hero. Compare motion experiments with a query
 | Log in | `https://app.dockettree.com/login` |
 | Compare / Explore Pricing | `https://app.dockettree.com/pricing` |
 | Contact Sales | `mailto:bno@billyno.com` |
+| Contact (footer) | `/contact` → Pages Function `POST /api/contact` |
+
+## Contact form + Postmark
+
+Static export cannot hold a Postmark token. Submit goes to a **Cloudflare Pages Function** at `functions/api/contact.js`, which calls a **separate marketing Postmark server** (do not reuse the in-app “Docket Tree” server token).
+
+| Env var | Purpose |
+| --- | --- |
+| `POSTMARK_SERVER_TOKEN` | Marketing server API token (**secret**, Pages dashboard only) |
+| `POSTMARK_FROM` | Verified From on that marketing server (**TBD — Billy**) |
+| `POSTMARK_TO` | Destination inbox (**TBD — Billy**; no code default) |
+| `POSTMARK_MESSAGE_STREAM` | Optional on the marketing server; default `outbound` |
+
+Without those vars (or on Try Live via `npx serve out`), the form **dry-runs** successfully so the UI can be reviewed. For a local function: `npx wrangler pages dev out`.
 
 ## Deploy (dockettree.com / www)
 
-**Host:** Cloudflare Pages with Next.js **static HTML export** (`output: 'export'` → `out/`).
+**Host:** Cloudflare Pages with Next.js **static HTML export** (`output: 'export'` → `out/`) plus repo-root **`functions/`**.
 
 | Setting | Value |
 | --- | --- |
@@ -66,6 +80,7 @@ Default is the approved **static** hero. Compare motion experiments with a query
 | Build command | `npx next build` (or `npm run build`) |
 | Build output directory | `out` |
 | Environment variable | `NODE_VERSION` = `22` (or `20`) |
+| Secrets | `POSTMARK_*` as above (Production + Preview) |
 
 Keep **app.dockettree.com** on Cloud Run. Brand PNGs live in `public/brand/`.
 

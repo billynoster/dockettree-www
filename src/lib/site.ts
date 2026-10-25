@@ -6,12 +6,15 @@ export const PRICING_URL = `${APP_URL}/pricing`
 /** Enterprise / sales — verified owner contact from Project ops. */
 export const CONTACT_EMAIL = 'bno@billyno.com'
 export const CONTACT_SALES_URL = `mailto:${CONTACT_EMAIL}?subject=Docket%20Tree%20Enterprise`
+/** Marketing contact form (footer Company → Contact). */
+export const CONTACT_PATH = '/contact'
 
+/** In-page anchors use `/#…` so they resolve from `/contact` and other routes. */
 export const NAV_ANCHORS = [
-  { href: '#product', label: 'Product' },
-  { href: '#how-it-works', label: 'How It Works' },
-  { href: '#pricing', label: 'Pricing' },
-  { href: '#about', label: 'About' },
+  { href: '/#product', label: 'Product' },
+  { href: '/#how-it-works', label: 'How It Works' },
+  { href: '/#pricing', label: 'Pricing' },
+  { href: '/#about', label: 'About' },
 ] as const
 
 /** Verified from product pricing docs — monthly list prices. */

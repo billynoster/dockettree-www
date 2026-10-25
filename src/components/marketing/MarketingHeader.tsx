@@ -8,10 +8,16 @@ import { Button } from '@/components/ui/button'
 import { LOGIN_URL, NAV_ANCHORS, SIGNUP_URL } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
-export function MarketingHeader() {
+type Props = {
+  /** `light` for ivory pages (e.g. /contact); `auto` follows hero → product scroll. */
+  tone?: 'auto' | 'light'
+}
+
+export function MarketingHeader({ tone = 'auto' }: Props) {
   const [scrolled, setScrolled] = useState(false)
-  const [overLight, setOverLight] = useState(false)
+  const [overLight, setOverLight] = useState(tone === 'light')
   const [menuOpen, setMenuOpen] = useState(false)
+  const forceLight = tone === 'light'
   const reduce = useReducedMotion()
   const menuId = useId()
 
@@ -19,6 +25,10 @@ export function MarketingHeader() {
     const update = () => {
       const y = window.scrollY
       setScrolled(y > 24)
+      if (forceLight) {
+        setOverLight(true)
+        return
+      }
       const product = document.getElementById('product')
       if (product) {
         setOverLight(product.getBoundingClientRect().top < 80)
@@ -33,7 +43,7 @@ export function MarketingHeader() {
       window.removeEventListener('scroll', update)
       window.removeEventListener('resize', update)
     }
-  }, [])
+  }, [forceLight])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -51,8 +61,8 @@ export function MarketingHeader() {
     }
   }, [menuOpen])
 
-  const light = overLight || menuOpen
-  const solid = scrolled || overLight
+  const light = forceLight || overLight || menuOpen
+  const solid = forceLight || scrolled || overLight
 
   return (
     <header

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import { APP_URL, CONTACT_SALES_URL, LOGIN_URL, NAV_ANCHORS } from '@/lib/site'
+import { APP_URL, CONTACT_PATH, LOGIN_URL, NAV_ANCHORS } from '@/lib/site'
 
 export function MarketingFooter() {
   const year = new Date().getFullYear()
@@ -14,7 +14,7 @@ export function MarketingFooter() {
               Product
             </p>
             <ul className="mt-4 space-y-2 text-sm text-slate">
-              {NAV_ANCHORS.filter((n) => n.href !== '#about').map((item) => (
+              {NAV_ANCHORS.filter((n) => n.href !== '/#about').map((item) => (
                 <li key={item.href}>
                   <a className="hover:text-evergreen" href={item.href}>
                     {item.label === 'Product' ? 'Overview' : item.label}
@@ -30,12 +30,12 @@ export function MarketingFooter() {
             </p>
             <ul className="mt-4 space-y-2 text-sm text-slate">
               <li>
-                <a className="hover:text-evergreen" href="#about">
+                <a className="hover:text-evergreen" href="/#about">
                   About
                 </a>
               </li>
               <li>
-                <a className="hover:text-evergreen" href={CONTACT_SALES_URL}>
+                <a className="hover:text-evergreen" href={CONTACT_PATH}>
                   Contact
                 </a>
               </li>
