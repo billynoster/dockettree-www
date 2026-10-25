@@ -1,6 +1,6 @@
-export type HeroMotionMode = 'pulse' | 'reveal' | 'paths'
+export type HeroMotionMode = 'pulse' | 'reveal' | 'paths' | 'static'
 
-/** Three.js variants only — paths uses SVG. */
+/** Three.js variants only — paths/static use SVG / composition. */
 export type HeroWebGLMotionMode = 'pulse' | 'reveal'
 
 export const HERO_MOTION_PARAM = 'heroMotion'
@@ -21,12 +21,18 @@ export const HERO_MOTION_OPTIONS = [
     label: 'SVG connected paths',
     short: 'Paths',
   },
+  {
+    id: 'static' as const,
+    label: 'Static product-led',
+    short: 'Static',
+  },
 ] as const
 
 /** Default when Billy lands without choosing — safer settle+hold path. */
 export const DEFAULT_HERO_MOTION: HeroMotionMode = 'pulse'
 
 export function parseHeroMotion(value: string | null | undefined): HeroMotionMode {
+  if (value === 'static' || value === 'product' || value === 'd') return 'static'
   if (value === 'paths' || value === 'svg' || value === 'c') return 'paths'
   if (value === 'reveal' || value === 'branch' || value === 'b') return 'reveal'
   if (value === 'pulse' || value === 'a') return 'pulse'

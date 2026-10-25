@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react'
 import { ConnectedPathsBackground } from '@/components/hero/ConnectedPathsBackground'
 import { NetworkCanvas } from '@/components/hero/NetworkCanvas'
 import { NetworkFallback } from '@/components/hero/NetworkFallback'
+import { StaticProductBackground } from '@/components/hero/StaticProductBackground'
 import { ReadinessOverviewVisual } from '@/components/marketing/visuals'
 import { Button } from '@/components/ui/button'
 import {
@@ -52,6 +53,7 @@ export function HeroSection() {
     : Math.max(scrollProgress, autoProgress)
 
   const usePaths = motionMode === 'paths'
+  const useStatic = motionMode === 'static'
   const useWebGL = isWebGLHeroMotion(motionMode)
 
   useEffect(() => {
@@ -74,7 +76,7 @@ export function HeroSection() {
   }, [])
 
   useEffect(() => {
-    if (reducedMotion) {
+    if (reducedMotion || useStatic) {
       setScrollProgress(1)
       setAutoProgress(1)
       return
@@ -96,12 +98,12 @@ export function HeroSection() {
       window.removeEventListener('scroll', update)
       window.removeEventListener('resize', update)
     }
-  }, [reducedMotion])
+  }, [reducedMotion, useStatic])
 
   // One-shot assemble so chips replay settle→hold without scroll-jacking.
   useEffect(() => {
-    if (reducedMotion || usePaths) {
-      if (usePaths) setAutoProgress(1)
+    if (reducedMotion || usePaths || useStatic) {
+      if (usePaths || useStatic) setAutoProgress(1)
       return
     }
     setAutoProgress(0.12)
@@ -116,7 +118,7 @@ export function HeroSection() {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [motionMode, reducedMotion, usePaths])
+  }, [motionMode, reducedMotion, usePaths, useStatic])
 
   const selectMotion = (mode: HeroMotionMode) => {
     setMotionMode(mode)
@@ -126,12 +128,22 @@ export function HeroSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[132vh] bg-evergreen-deep sm:h-[140vh]"
+      className={cn(
+        'relative bg-evergreen-deep',
+        useStatic ? 'min-h-[100svh]' : 'h-[132vh] sm:h-[140vh]',
+      )}
       aria-label="Hero"
     >
-      <div className="sticky top-0 h-[100svh] overflow-hidden">
+      <div
+        className={cn(
+          'overflow-hidden',
+          useStatic ? 'relative min-h-[100svh]' : 'sticky top-0 h-[100svh]',
+        )}
+      >
         <div className="absolute inset-0" aria-hidden="true">
-          {usePaths ? (
+          {useStatic ? (
+            <StaticProductBackground />
+          ) : usePaths ? (
             <ConnectedPathsBackground
               key="paths"
               reducedMotion={reducedMotion}
@@ -161,22 +173,31 @@ export function HeroSection() {
               )}
             </>
           )}
-          <div
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(18,61,49,0.95)_0%,rgba(18,61,49,0.82)_36%,rgba(18,61,49,0.45)_62%,rgba(18,61,49,0.28)_100%)] transition-opacity duration-500"
-            style={{
-              opacity: usePaths
-                ? reducedMotion
-                  ? 0.62
-                  : 0.38
-                : reducedMotion
-                  ? 1
-                  : 1 - Math.max(0, progress - 0.75) * 0.35,
-            }}
-          />
+          {!useStatic ? (
+            <div
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(18,61,49,0.95)_0%,rgba(18,61,49,0.82)_36%,rgba(18,61,49,0.45)_62%,rgba(18,61,49,0.28)_100%)] transition-opacity duration-500"
+              style={{
+                opacity: usePaths
+                  ? reducedMotion
+                    ? 0.62
+                    : 0.38
+                  : reducedMotion
+                    ? 1
+                    : 1 - Math.max(0, progress - 0.75) * 0.35,
+              }}
+            />
+          ) : null}
         </div>
 
-        <div className="relative z-10 mx-auto flex h-full max-w-[1280px] flex-col justify-center px-5 pt-[76px] pb-8 sm:px-8 sm:pt-[80px]">
-          <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-12">
+        <div className="relative z-10 mx-auto flex h-full min-h-[100svh] max-w-[1280px] flex-col justify-center px-5 pt-[76px] pb-10 sm:px-8 sm:pt-[80px] sm:pb-12">
+          <div
+            className={cn(
+              'grid items-center gap-8 lg:gap-12',
+              useStatic
+                ? 'lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]'
+                : 'lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]',
+            )}
+          >
             <div className="max-w-xl text-ivory">
               <p className="hero-rise font-display text-[0.72rem] font-semibold tracking-[0.2em] text-ivory/75 uppercase sm:text-xs">
                 Vendor readiness for property operations
@@ -207,20 +228,37 @@ export function HeroSection() {
               </p>
             </div>
 
-            <div className="hero-rise delay-5 relative mx-auto w-full max-w-xl lg:max-w-none">
-              <div
-                className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] bg-[radial-gradient(circle_at_60%_40%,rgba(120,150,106,0.28),transparent_65%)]"
-                aria-hidden
+            <div
+              className={cn(
+                'hero-rise delay-5 relative mx-auto w-full',
+                useStatic
+                  ? 'max-w-xl scale-100 sm:max-w-2xl lg:max-w-none lg:origin-right lg:scale-[1.06] xl:scale-[1.08]'
+                  : 'max-w-xl lg:max-w-none',
+              )}
+            >
+              {useStatic ? null : (
+                <div
+                  className="pointer-events-none absolute -inset-6 -z-10 rounded-[28px] bg-[radial-gradient(circle_at_60%_40%,rgba(120,150,106,0.28),transparent_65%)]"
+                  aria-hidden
+                />
+              )}
+              <ReadinessOverviewVisual
+                className={
+                  useStatic
+                    ? 'border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]'
+                    : 'shadow-[0_28px_70px_rgba(0,0,0,0.38)]'
+                }
               />
-              <ReadinessOverviewVisual className="shadow-[0_28px_70px_rgba(0,0,0,0.38)]" />
-              <p className="mt-3 text-center text-xs font-medium tracking-[0.12em] text-amber-gold/90 uppercase lg:text-left">
-                Scattered documents → one connected readiness view
-              </p>
+              {useStatic ? null : (
+                <p className="mt-3 text-center text-xs font-medium tracking-[0.12em] text-amber-gold/90 uppercase lg:text-left">
+                  Scattered documents → one connected readiness view
+                </p>
+              )}
             </div>
           </div>
         </div>
 
-        {/* Prototype A/B/C switch — compare motion / background only */}
+        {/* Mode switcher — always available so Static can reach Pulse/Reveal/Paths */}
         <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 flex justify-center px-4 sm:bottom-6 sm:justify-start sm:px-8">
           <div
             className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-ivory/20 bg-evergreen-deep/75 px-2 py-1.5 backdrop-blur-sm"
@@ -228,7 +266,7 @@ export function HeroSection() {
             aria-label="Hero network motion prototype"
           >
             <span className="hidden px-1.5 text-[10px] font-semibold tracking-[0.14em] text-ivory/55 uppercase sm:inline">
-              Motion
+              {useStatic ? 'Hero' : 'Motion'}
             </span>
             {HERO_MOTION_OPTIONS.map((opt) => {
               const active = motionMode === opt.id
