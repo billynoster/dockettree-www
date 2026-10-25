@@ -3,7 +3,6 @@
 import { useId, useState, type FormEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { CONTACT_EMAIL } from '@/lib/site'
 import { cn } from '@/lib/utils'
 
 type Status = 'idle' | 'submitting' | 'success' | 'error'
@@ -246,11 +245,7 @@ export function ContactForm() {
           className="rounded-lg border border-[#e4c4bc] bg-[#fbf1ee] px-3.5 py-3 text-sm text-[#8a3b2b]"
           role="alert"
         >
-          {errors.form}{' '}
-          <a className="font-semibold underline" href={`mailto:${CONTACT_EMAIL}`}>
-            Email {CONTACT_EMAIL}
-          </a>{' '}
-          if this keeps happening.
+          {errors.form}
         </p>
       ) : null}
 
@@ -276,15 +271,6 @@ export function ContactForm() {
         >
           {status === 'submitting' ? 'Sending…' : 'Send message'}
         </Button>
-        <p className="text-sm text-slate">
-          Or email{' '}
-          <a
-            className="font-medium text-evergreen underline-offset-2 hover:underline"
-            href={`mailto:${CONTACT_EMAIL}`}
-          >
-            {CONTACT_EMAIL}
-          </a>
-        </p>
       </div>
     </form>
   )

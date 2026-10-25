@@ -53,7 +53,7 @@ Default is the approved **static** hero. Compare motion experiments with a query
 | Start Free Trial | `https://app.dockettree.com/signup` |
 | Log in | `https://app.dockettree.com/login` |
 | Compare / Explore Pricing | `https://app.dockettree.com/pricing` |
-| Contact Sales | `mailto:bno@billyno.com` |
+| Contact Sales | `/contact` |
 | Contact (footer) | `/contact` → Pages Function `POST /api/contact` |
 
 ## Contact form + Postmark
@@ -64,10 +64,12 @@ Static export cannot hold a Postmark token. Submit goes to a **Cloudflare Pages 
 | --- | --- |
 | `POSTMARK_SERVER_TOKEN` | Marketing server API token (**secret**, Pages dashboard only) |
 | `POSTMARK_FROM` | Verified From on that marketing server (**TBD — Billy**) |
-| `POSTMARK_TO` | Destination inbox (**TBD — Billy**; no code default) |
+| `POSTMARK_TO` | Destination inbox — **env only** (Cloudflare Pages / local `.env*`, gitignored). Never commit a real address. Placeholder for local: `POSTMARK_TO=your@inbox` |
 | `POSTMARK_MESSAGE_STREAM` | Optional on the marketing server; default `outbound` |
 
 Without those vars (or on Try Live via `npx serve out`), the form **dry-runs** successfully so the UI can be reviewed. For a local function: `npx wrangler pages dev out`.
+
+Do **not** put personal inboxes in source, client bundles, UI mailto links, or public docs.
 
 ## Deploy (dockettree.com / www)
 

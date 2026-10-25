@@ -3,11 +3,14 @@ export const APP_URL = 'https://app.dockettree.com'
 export const SIGNUP_URL = `${APP_URL}/signup`
 export const LOGIN_URL = `${APP_URL}/login`
 export const PRICING_URL = `${APP_URL}/pricing`
-/** Enterprise / sales — verified owner contact from Project ops. */
-export const CONTACT_EMAIL = 'bno@billyno.com'
-export const CONTACT_SALES_URL = `mailto:${CONTACT_EMAIL}?subject=Docket%20Tree%20Enterprise`
-/** Marketing contact form (footer Company → Contact). */
+/**
+ * Marketing contact form + sales CTA destination.
+ * Inbox delivery uses env-only `POSTMARK_TO` in the Pages Function — never
+ * hardcode a personal address in client code, README, or UI mailto links.
+ */
 export const CONTACT_PATH = '/contact'
+/** Pricing “Contact Sales” → same form (no personal mailto in the bundle). */
+export const CONTACT_SALES_URL = CONTACT_PATH
 
 /** In-page anchors use `/#…` so they resolve from `/contact` and other routes. */
 export const NAV_ANCHORS = [

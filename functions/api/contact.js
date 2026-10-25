@@ -7,10 +7,11 @@
  *
  *   POSTMARK_SERVER_TOKEN  — marketing server API token (secret)
  *   POSTMARK_FROM          — verified From on that marketing server (TBD)
- *   POSTMARK_TO            — destination inbox (TBD — Billy confirms; no default)
+ *   POSTMARK_TO            — destination inbox from env ONLY (never hardcode)
  *   POSTMARK_MESSAGE_STREAM — optional on that server; default "outbound"
  *
  * If token / From / To are missing → 200 { ok: true, dryRun: true }.
+ * Reply-To is the submitter’s form email (not POSTMARK_TO).
  */
 
 const MAX_NAME = 120
