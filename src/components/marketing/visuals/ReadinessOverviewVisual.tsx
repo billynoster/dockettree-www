@@ -94,48 +94,60 @@ export function ReadinessOverviewVisual({
         )}
       >
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-2">
-          {cards.map((card, i) => (
-            <motion.div
-              key={card.key}
-              className={cn(
-                'flex min-h-[4.25rem] flex-col justify-between rounded-xl px-2.5 py-2 sm:min-h-[4.75rem] sm:px-3 sm:py-2.5',
-                card.className,
-                intelligent && 'hero-intel-kpi',
-              )}
-              style={
-                intelligent
-                  ? ({ ['--intel-i' as string]: i } as React.CSSProperties)
-                  : undefined
-              }
-              initial={motionOff ? false : { opacity: 0, y: 8 }}
-              animate={
-                motionOff
-                  ? undefined
-                  : active
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: 0.9, y: 0 }
-              }
-              transition={
-                motionOff
-                  ? undefined
-                  : { duration: 0.35, delay: i * 0.05 }
-              }
-            >
-              <p className="font-display text-2xl font-semibold leading-none tracking-tight sm:text-[1.65rem]">
-                {card.n}
-              </p>
-              <div>
-                <p className="text-[11px] font-semibold leading-tight">
-                  {card.label}
+          {cards.map((card, i) => {
+            const kpiClass = cn(
+              'flex min-h-[4.25rem] flex-col justify-between rounded-xl px-2.5 py-2 sm:min-h-[4.75rem] sm:px-3 sm:py-2.5',
+              card.className,
+              intelligent && 'hero-intel-kpi',
+            )
+            const kpiBody = (
+              <>
+                <p className="font-display text-2xl font-semibold leading-none tracking-tight sm:text-[1.65rem]">
+                  {card.n}
                 </p>
-                {!compact ? (
-                  <p className="mt-0.5 hidden text-[10px] leading-snug opacity-80 sm:block">
-                    {card.hint}
+                <div>
+                  <p className="text-[11px] font-semibold leading-tight">
+                    {card.label}
                   </p>
-                ) : null}
-              </div>
-            </motion.div>
-          ))}
+                  {!compact ? (
+                    <p className="mt-0.5 hidden text-[10px] leading-snug opacity-80 sm:block">
+                      {card.hint}
+                    </p>
+                  ) : null}
+                </div>
+              </>
+            )
+            // Plain nodes when CSS/intelligent owns opacity — avoids Framer
+            // leaving inline opacity:0 after the static→variant switch.
+            if (motionOff) {
+              return (
+                <div
+                  key={card.key}
+                  className={kpiClass}
+                  style={
+                    intelligent
+                      ? ({ ['--intel-i' as string]: i } as React.CSSProperties)
+                      : undefined
+                  }
+                >
+                  {kpiBody}
+                </div>
+              )
+            }
+            return (
+              <motion.div
+                key={card.key}
+                className={kpiClass}
+                initial={{ opacity: 0, y: 8 }}
+                animate={
+                  active ? { opacity: 1, y: 0 } : { opacity: 0.9, y: 0 }
+                }
+                transition={{ duration: 0.35, delay: i * 0.05 }}
+              >
+                {kpiBody}
+              </motion.div>
+            )
+          })}
         </div>
 
         <div className="mt-3 grid items-start gap-2.5 lg:grid-cols-[1.25fr_0.85fr] lg:gap-2.5">
@@ -149,45 +161,56 @@ export function ReadinessOverviewVisual({
               Needs attention
             </p>
             <ul className="mt-2 space-y-1">
-              {attention.map((v, i) => (
-                <motion.li
-                  key={v.id}
-                  className="flex items-center justify-between gap-2 rounded-lg bg-ivory px-2.5 py-1.5"
-                  initial={motionOff ? false : { opacity: 0, x: -6 }}
-                  animate={
-                    motionOff
-                      ? undefined
-                      : active
+              {attention.map((v, i) => {
+                const row = (
+                  <>
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold text-charcoal">
+                        {v.name}
+                      </p>
+                      <p className="truncate text-xs text-slate">
+                        {v.blocker ?? v.trade}
+                      </p>
+                    </div>
+                    <span
+                      className={cn(
+                        'status-chip shrink-0',
+                        statusChipClass(v.status),
+                      )}
+                    >
+                      {STATUS_LABEL[v.status]}
+                    </span>
+                  </>
+                )
+                if (motionOff) {
+                  return (
+                    <li
+                      key={v.id}
+                      className="flex items-center justify-between gap-2 rounded-lg bg-ivory px-2.5 py-1.5"
+                    >
+                      {row}
+                    </li>
+                  )
+                }
+                return (
+                  <motion.li
+                    key={v.id}
+                    className="flex items-center justify-between gap-2 rounded-lg bg-ivory px-2.5 py-1.5"
+                    initial={{ opacity: 0, x: -6 }}
+                    animate={
+                      active
                         ? { opacity: 1, x: 0 }
                         : { opacity: 0.92, x: 0 }
-                  }
-                  transition={
-                    motionOff
-                      ? undefined
-                      : {
-                          duration: 0.3,
-                          delay: 0.12 + i * 0.04,
-                        }
-                  }
-                >
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-charcoal">
-                      {v.name}
-                    </p>
-                    <p className="truncate text-xs text-slate">
-                      {v.blocker ?? v.trade}
-                    </p>
-                  </div>
-                  <span
-                    className={cn(
-                      'status-chip shrink-0',
-                      statusChipClass(v.status),
-                    )}
+                    }
+                    transition={{
+                      duration: 0.3,
+                      delay: 0.12 + i * 0.04,
+                    }}
                   >
-                    {STATUS_LABEL[v.status]}
-                  </span>
-                </motion.li>
-              ))}
+                    {row}
+                  </motion.li>
+                )
+              })}
             </ul>
           </div>
 
