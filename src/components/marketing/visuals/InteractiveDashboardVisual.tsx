@@ -207,7 +207,7 @@ export function InteractiveDashboardVisual({ className }: Props) {
                 className={cn(
                   'flex items-center gap-2 rounded-lg px-2 py-1.5 text-[12.5px] font-medium',
                   active
-                    ? 'bg-pale-moss text-evergreen shadow-[inset_3px_0_0_#1f5c4a]'
+                    ? 'bg-pale-moss text-evergreen'
                     : 'text-charcoal',
                 )}
                 aria-current={active ? 'page' : undefined}
@@ -375,6 +375,11 @@ export function InteractiveDashboardVisual({ className }: Props) {
                     Severity order — expired, corrections, missing, expiring
                   </p>
                 </div>
+                {!selected ? (
+                  <p className="mt-1.5 text-[11px] text-slate/90">
+                    Select a vendor to highlight related detail
+                  </p>
+                ) : null}
                 <ul className="mt-2 space-y-1" role="listbox" aria-label="Needs attention">
                   {attention.map((row) => {
                     const isSelected = selectedId === row.id
@@ -391,7 +396,7 @@ export function InteractiveDashboardVisual({ className }: Props) {
                           }
                           onKeyDown={(e) => onRowKey(e, row.id)}
                           className={cn(
-                            'flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2 text-left transition-colors',
+                            'flex w-full cursor-pointer items-center justify-between gap-2 rounded-lg px-2 py-2 text-left transition-colors',
                             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-evergreen',
                             isSelected
                               ? 'bg-pale-moss ring-1 ring-evergreen/25'

@@ -74,7 +74,8 @@ export function ProductProofSection() {
           </noscript>
 
           <p className="mt-3 text-center text-[11px] font-medium tracking-wide text-slate/80 uppercase">
-            Interactive product demo · fictional demo data
+            Interactive demo — try selecting a Needs Attention row · fictional
+            data
           </p>
 
           <ul className="mt-6 flex flex-wrap justify-center gap-x-8 gap-y-3">
