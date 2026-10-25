@@ -46,16 +46,16 @@ export function ConnectedPathsBackground({
         <path
           d="M 420 390 C 520 370, 640 340, 780 355 C 880 366, 980 390, 1085 410"
           stroke="#78966A"
-          strokeWidth="1.65"
-          opacity="0.72"
+          strokeWidth="1.85"
+          opacity="0.88"
           pathLength={1}
         />
         {/* Documents branch */}
         <path
           d="M 480 250 C 560 270, 650 300, 780 355"
           stroke="#1F5C4A"
-          strokeWidth="1.35"
-          opacity="0.78"
+          strokeWidth="1.5"
+          opacity="0.9"
           pathLength={1}
           style={{ animationDelay: '120ms' }}
         />
@@ -63,8 +63,8 @@ export function ConnectedPathsBackground({
         <path
           d="M 455 520 C 545 490, 650 430, 780 355"
           stroke="#78966A"
-          strokeWidth="1.35"
-          opacity="0.7"
+          strokeWidth="1.5"
+          opacity="0.85"
           pathLength={1}
           style={{ animationDelay: '220ms' }}
         />
@@ -72,8 +72,8 @@ export function ConnectedPathsBackground({
         <path
           d="M 560 180 C 640 220, 720 300, 820 360"
           stroke="#1F5C4A"
-          strokeWidth="1.2"
-          opacity="0.68"
+          strokeWidth="1.35"
+          opacity="0.82"
           pathLength={1}
           style={{ animationDelay: '320ms' }}
         />
@@ -81,8 +81,8 @@ export function ConnectedPathsBackground({
         <path
           d="M 590 600 C 670 540, 740 440, 860 385"
           stroke="#78966A"
-          strokeWidth="1.2"
-          opacity="0.65"
+          strokeWidth="1.35"
+          opacity="0.8"
           pathLength={1}
           style={{ animationDelay: '400ms' }}
         />
@@ -91,8 +91,8 @@ export function ConnectedPathsBackground({
           id="hero-signal-path"
           d="M 700 140 C 760 220, 820 300, 920 375 C 980 400, 1040 415, 1100 422"
           stroke="#D9A441"
-          strokeWidth="1.4"
-          opacity="0.55"
+          strokeWidth="1.55"
+          opacity="0.78"
           pathLength={1}
           style={{ animationDelay: '500ms' }}
         />
@@ -100,8 +100,8 @@ export function ConnectedPathsBackground({
         <path
           d="M 640 280 C 700 320, 740 400, 700 480"
           stroke="#78966A"
-          strokeWidth="1"
-          opacity="0.4"
+          strokeWidth="1.15"
+          opacity="0.55"
           pathLength={1}
           style={{ animationDelay: '580ms' }}
         />
@@ -109,16 +109,16 @@ export function ConnectedPathsBackground({
         <path
           d="M 920 375 C 980 360, 1040 340, 1110 325"
           stroke="#78966A"
-          strokeWidth="1.15"
-          opacity="0.55"
+          strokeWidth="1.3"
+          opacity="0.72"
           pathLength={1}
           style={{ animationDelay: '640ms' }}
         />
         <path
           d="M 920 375 C 990 400, 1050 450, 1120 490"
           stroke="#1F5C4A"
-          strokeWidth="1.15"
-          opacity="0.5"
+          strokeWidth="1.3"
+          opacity="0.68"
           pathLength={1}
           style={{ animationDelay: '700ms' }}
         />

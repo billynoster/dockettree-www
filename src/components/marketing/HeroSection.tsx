@@ -166,8 +166,8 @@ export function HeroSection() {
             style={{
               opacity: usePaths
                 ? reducedMotion
-                  ? 0.72
-                  : 0.55
+                  ? 0.62
+                  : 0.38
                 : reducedMotion
                   ? 1
                   : 1 - Math.max(0, progress - 0.75) * 0.35,
