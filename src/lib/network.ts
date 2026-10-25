@@ -6,11 +6,16 @@ export type NetworkNode = {
   size: number
   kind: 'evergreen' | 'moss' | 'amber'
   tier: 'hub' | 'branch' | 'leaf'
+  /** Index in reveal order for branch nodes; leaves inherit parent branch. */
+  branchIndex?: number
+  parentBranchId?: number
 }
 
 export type NetworkEdge = {
   from: number
   to: number
+  /** Hub→branch (and similar) edges eligible for pulse signals. */
+  meaningful?: boolean
 }
 
 function mulberry32(seed: number) {
@@ -74,7 +79,7 @@ export function buildNetwork() {
     { label: 'Activity', angle: 4.55, kind: 'evergreen', leaves: 3 },
   ]
 
-  for (const branch of branches) {
+  branches.forEach((branch, branchIndex) => {
     const ring = 1.55 + rand() * 0.18
     const bx = Math.cos(branch.angle) * ring
     const by = (rand() - 0.5) * 0.55
@@ -86,7 +91,8 @@ export function buildNetwork() {
       'branch',
       branch.label,
     )
-    edges.push({ from: hub, to: branchId })
+    nodes[branchId].branchIndex = branchIndex
+    edges.push({ from: hub, to: branchId, meaningful: true })
 
     for (let i = 0; i < branch.leaves; i += 1) {
       const leafA = branch.angle + (i - (branch.leaves - 1) / 2) * 0.28
@@ -101,12 +107,14 @@ export function buildNetwork() {
         i === 0 && branch.kind === 'amber' ? 'amber' : branch.kind,
         'leaf',
       )
+      nodes[leafId].branchIndex = branchIndex
+      nodes[leafId].parentBranchId = branchId
       edges.push({ from: branchId, to: leafId })
       if (i > 0 && i % 2 === 0) {
         edges.push({ from: leafId - 1, to: leafId })
       }
     }
-  }
+  })
 
   // Soft cross-links between adjacent branches for a connected canopy feel
   const branchIds = nodes.filter((n) => n.tier === 'branch').map((n) => n.id)

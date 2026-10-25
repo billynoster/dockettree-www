@@ -1,5 +1,14 @@
+import type { HeroMotionMode } from '@/lib/heroMotion'
+import { smoothstep } from '@/lib/heroMotion'
+
 /** Non-WebGL atmosphere so the hero never looks empty. Intentional hub + branches. */
-export function NetworkFallback({ progress }: { progress: number }) {
+export function NetworkFallback({
+  progress,
+  motionMode = 'pulse',
+}: {
+  progress: number
+  motionMode?: HeroMotionMode
+}) {
   const p = Math.min(1, Math.max(0, progress))
 
   const hub = [68, 42] as const
@@ -12,11 +21,14 @@ export function NetworkFallback({ progress }: { progress: number }) {
     { tip: [42, 48], leaf: [28, 52], color: '#1F5C4A' },
   ]
 
-  const scatter = (x: number, y: number, i: number) => {
-    const nx = x + (1 - p) * ((i % 3) - 1) * 12
-    const ny = y + (1 - p) * ((i % 4) - 1.5) * 9
+  const scatter = (x: number, y: number, i: number, localP: number) => {
+    const nx = x + (1 - localP) * ((i % 3) - 1) * 12
+    const ny = y + (1 - localP) * ((i % 4) - 1.5) * 9
     return [nx, ny] as const
   }
+
+  const hubP =
+    motionMode === 'reveal' ? smoothstep(0.05, 0.28, p) : p
 
   return (
     <svg
@@ -35,10 +47,15 @@ export function NetworkFallback({ progress }: { progress: number }) {
       <rect width="100" height="100" fill="#123D31" />
       <rect width="100" height="100" fill="url(#glow)" />
       {branches.map((b, i) => {
-        const [tx, ty] = scatter(b.tip[0], b.tip[1], i)
-        const [lx, ly] = scatter(b.leaf[0], b.leaf[1], i + 3)
+        const branchStart = 0.22 + i * 0.11
+        const localP =
+          motionMode === 'reveal'
+            ? smoothstep(branchStart, branchStart + 0.14, p)
+            : p
+        const [tx, ty] = scatter(b.tip[0], b.tip[1], i, localP)
+        const [lx, ly] = scatter(b.leaf[0], b.leaf[1], i + 3, localP)
         return (
-          <g key={i}>
+          <g key={i} opacity={0.35 + localP * 0.65}>
             <line
               x1={hub[0]}
               y1={hub[1]}
@@ -46,7 +63,7 @@ export function NetworkFallback({ progress }: { progress: number }) {
               y2={ty}
               stroke="#78966A"
               strokeWidth="0.18"
-              opacity={0.12 + p * 0.5}
+              opacity={0.12 + localP * 0.5}
             />
             <line
               x1={tx}
@@ -55,21 +72,21 @@ export function NetworkFallback({ progress }: { progress: number }) {
               y2={ly}
               stroke="#78966A"
               strokeWidth="0.12"
-              opacity={0.08 + p * 0.4}
+              opacity={0.08 + localP * 0.4}
             />
             <circle
               cx={tx}
               cy={ty}
               r={0.85}
               fill={b.color}
-              opacity={0.7 + p * 0.3}
+              opacity={0.7 + localP * 0.3}
             />
             <circle
               cx={lx}
               cy={ly}
               r={0.45}
               fill={b.color}
-              opacity={0.55 + p * 0.35}
+              opacity={0.55 + localP * 0.35}
             />
           </g>
         )
@@ -79,7 +96,7 @@ export function NetworkFallback({ progress }: { progress: number }) {
         cy={hub[1]}
         r={1.6}
         fill="#D9A441"
-        opacity={0.85 + p * 0.15}
+        opacity={0.55 + hubP * 0.45}
       />
     </svg>
   )

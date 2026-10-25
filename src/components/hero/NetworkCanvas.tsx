@@ -12,10 +12,13 @@ import {
 } from 'react'
 
 import { NetworkScene } from '@/components/hero/NetworkScene'
+import type { HeroMotionMode } from '@/lib/heroMotion'
 
 type NetworkCanvasProps = {
   progress: number
   reducedMotion: boolean
+  motionMode: HeroMotionMode
+  simplified?: boolean
 }
 
 class WebGLErrorBoundary extends Component<
@@ -38,7 +41,12 @@ class WebGLErrorBoundary extends Component<
   }
 }
 
-export function NetworkCanvas({ progress, reducedMotion }: NetworkCanvasProps) {
+export function NetworkCanvas({
+  progress,
+  reducedMotion,
+  motionMode,
+  simplified = false,
+}: NetworkCanvasProps) {
   const [failed, setFailed] = useState(false)
   const wrapRef = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(true)
@@ -56,13 +64,21 @@ export function NetworkCanvas({ progress, reducedMotion }: NetworkCanvasProps) {
 
   if (failed) return null
 
+  // Pulse needs a live loop for infrequent edge signals; reveal can demand
+  // after settle. Keep always while visible unless reduced-motion / offscreen.
+  const needsPulseLoop = motionMode === 'pulse' && !reducedMotion && !simplified
+  const frameloop =
+    visible && !reducedMotion && (needsPulseLoop || progress < 0.99)
+      ? 'always'
+      : 'demand'
+
   return (
     <div ref={wrapRef} className="h-full w-full">
       <WebGLErrorBoundary onError={() => setFailed(true)}>
         <Canvas
           className="h-full w-full"
-          dpr={visible ? [1, 1.35] : [1, 1]}
-          frameloop={visible && !reducedMotion ? 'always' : 'demand'}
+          dpr={simplified ? [1, 1] : visible ? [1, 1.35] : [1, 1]}
+          frameloop={frameloop}
           camera={{ position: [0, 0.2, 7.2], fov: 42, near: 0.1, far: 40 }}
           gl={{
             antialias: true,
@@ -71,7 +87,12 @@ export function NetworkCanvas({ progress, reducedMotion }: NetworkCanvasProps) {
           }}
         >
           <Suspense fallback={null}>
-            <NetworkScene progress={progress} reducedMotion={reducedMotion} />
+            <NetworkScene
+              progress={progress}
+              reducedMotion={reducedMotion}
+              motionMode={motionMode}
+              simplified={simplified}
+            />
           </Suspense>
         </Canvas>
       </WebGLErrorBoundary>

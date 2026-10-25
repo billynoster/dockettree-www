@@ -7,10 +7,31 @@ import { NetworkCanvas } from '@/components/hero/NetworkCanvas'
 import { NetworkFallback } from '@/components/hero/NetworkFallback'
 import { ReadinessOverviewVisual } from '@/components/marketing/visuals'
 import { Button } from '@/components/ui/button'
+import {
+  DEFAULT_HERO_MOTION,
+  HERO_MOTION_OPTIONS,
+  HERO_MOTION_PARAM,
+  type HeroMotionMode,
+  parseHeroMotion,
+} from '@/lib/heroMotion'
 import { SIGNUP_URL } from '@/lib/site'
+import { cn } from '@/lib/utils'
 
 function clamp01(n: number) {
   return Math.min(1, Math.max(0, n))
+}
+
+function readMotionFromLocation(): HeroMotionMode {
+  if (typeof window === 'undefined') return DEFAULT_HERO_MOTION
+  const params = new URLSearchParams(window.location.search)
+  return parseHeroMotion(params.get(HERO_MOTION_PARAM))
+}
+
+function writeMotionToLocation(mode: HeroMotionMode) {
+  if (typeof window === 'undefined') return
+  const url = new URL(window.location.href)
+  url.searchParams.set(HERO_MOTION_PARAM, mode)
+  window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
 }
 
 export function HeroSection() {
@@ -19,10 +40,18 @@ export function HeroSection() {
   const reducedMotion = Boolean(reduce)
   const [mounted, setMounted] = useState(false)
   const [webglOk, setWebglOk] = useState(true)
-  const [progress, setProgress] = useState(reducedMotion ? 1 : 0.12)
+  const [simplified, setSimplified] = useState(false)
+  const [motionMode, setMotionMode] =
+    useState<HeroMotionMode>(DEFAULT_HERO_MOTION)
+  const [scrollProgress, setScrollProgress] = useState(0.12)
+  const [autoProgress, setAutoProgress] = useState(0.12)
+  const progress = reducedMotion
+    ? 1
+    : Math.max(scrollProgress, autoProgress)
 
   useEffect(() => {
     setMounted(true)
+    setMotionMode(readMotionFromLocation())
     try {
       const canvas = document.createElement('canvas')
       const gl =
@@ -31,11 +60,18 @@ export function HeroSection() {
     } catch {
       setWebglOk(false)
     }
+
+    const mq = window.matchMedia('(max-width: 768px)')
+    const apply = () => setSimplified(mq.matches)
+    apply()
+    mq.addEventListener('change', apply)
+    return () => mq.removeEventListener('change', apply)
   }, [])
 
   useEffect(() => {
     if (reducedMotion) {
-      setProgress(1)
+      setScrollProgress(1)
+      setAutoProgress(1)
       return
     }
 
@@ -45,7 +81,7 @@ export function HeroSection() {
       const rect = el.getBoundingClientRect()
       const total = el.offsetHeight - window.innerHeight
       const scrolled = clamp01(-rect.top / Math.max(total, 1))
-      setProgress(0.12 + clamp01(scrolled / 0.5) * 0.88)
+      setScrollProgress(0.12 + clamp01(scrolled / 0.5) * 0.88)
     }
 
     update()
@@ -57,6 +93,28 @@ export function HeroSection() {
     }
   }, [reducedMotion])
 
+  // One-shot assemble so A/B chips replay settle→hold without scroll-jacking.
+  useEffect(() => {
+    if (reducedMotion) return
+    setAutoProgress(0.12)
+    const duration = motionMode === 'reveal' ? 4200 : 2800
+    const start = performance.now()
+    let raf = 0
+    const tick = (now: number) => {
+      const t = clamp01((now - start) / duration)
+      const eased = t * t * (3 - 2 * t)
+      setAutoProgress(0.12 + eased * 0.88)
+      if (t < 1) raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [motionMode, reducedMotion])
+
+  const selectMotion = (mode: HeroMotionMode) => {
+    setMotionMode(mode)
+    writeMotionToLocation(mode)
+  }
+
   return (
     <section
       ref={sectionRef}
@@ -65,8 +123,8 @@ export function HeroSection() {
     >
       <div className="sticky top-0 h-[100svh] overflow-hidden">
         <div className="absolute inset-0" aria-hidden="true">
-          <NetworkFallback progress={progress} />
-          {mounted && webglOk && (
+          <NetworkFallback progress={progress} motionMode={motionMode} />
+          {mounted && webglOk && !simplified && (
             <div
               className="absolute inset-0 transition-opacity duration-500"
               style={{
@@ -78,13 +136,17 @@ export function HeroSection() {
               <NetworkCanvas
                 progress={reducedMotion ? 1 : progress}
                 reducedMotion={reducedMotion}
+                motionMode={motionMode}
+                simplified={simplified}
               />
             </div>
           )}
           <div
             className="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,rgba(18,61,49,0.95)_0%,rgba(18,61,49,0.82)_36%,rgba(18,61,49,0.45)_62%,rgba(18,61,49,0.28)_100%)] transition-opacity duration-500"
             style={{
-              opacity: reducedMotion ? 1 : 1 - Math.max(0, progress - 0.75) * 0.35,
+              opacity: reducedMotion
+                ? 1
+                : 1 - Math.max(0, progress - 0.75) * 0.35,
             }}
           />
         </div>
@@ -131,6 +193,43 @@ export function HeroSection() {
                 Scattered documents → one connected readiness view
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Prototype A/B switch — compare motion only */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-4 z-20 flex justify-center px-4 sm:bottom-6 sm:justify-start sm:px-8">
+          <div
+            className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 rounded-lg border border-ivory/20 bg-evergreen-deep/75 px-2 py-1.5 backdrop-blur-sm"
+            role="group"
+            aria-label="Hero network motion prototype"
+          >
+            <span className="hidden px-1.5 text-[10px] font-semibold tracking-[0.14em] text-ivory/55 uppercase sm:inline">
+              Motion
+            </span>
+            {HERO_MOTION_OPTIONS.map((opt) => {
+              const active = motionMode === opt.id
+              const href = `?${HERO_MOTION_PARAM}=${opt.id}`
+              return (
+                <a
+                  key={opt.id}
+                  href={href}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    selectMotion(opt.id)
+                  }}
+                  className={cn(
+                    'rounded-md px-2.5 py-1 text-[11px] font-semibold tracking-wide transition-colors sm:text-xs',
+                    active
+                      ? 'bg-amber-gold text-charcoal'
+                      : 'bg-ivory/10 text-ivory/85 hover:bg-ivory/18',
+                  )}
+                  aria-current={active ? 'true' : undefined}
+                >
+                  {opt.short}
+                  <span className="sr-only"> — {opt.label}</span>
+                </a>
+              )
+            })}
           </div>
         </div>
       </div>
