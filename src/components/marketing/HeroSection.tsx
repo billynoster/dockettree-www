@@ -1,22 +1,43 @@
 'use client'
 
+import { useLayoutEffect, useState } from 'react'
+
 import { HeroProductReveal } from '@/components/hero/HeroProductReveal'
 import { StaticProductBackground } from '@/components/hero/StaticProductBackground'
 import { ReadinessOverviewVisual } from '@/components/marketing/visuals'
 import { Button } from '@/components/ui/button'
+import {
+  type HeroVariant,
+  parseHeroVariant,
+} from '@/lib/heroVariant'
 import { SIGNUP_URL } from '@/lib/site'
 
 /**
  * Production hero — static product-led composition.
- * Two columns only when width is comfortable; otherwise stack.
- * Height is content-driven with a soft desktop band (~680–760) so
- * the next section can peek; never locked to 100svh (no clip traps).
+ * Try Live variations via `?hero=static|layered|intelligent` (default static).
  */
 export function HeroSection() {
+  const [variant, setVariant] = useState<HeroVariant>('static')
+
+  // Layout effect so Try Live `?hero=` applies before first paint when possible.
+  useLayoutEffect(() => {
+    setVariant(
+      parseHeroVariant(new URLSearchParams(window.location.search).get('hero')),
+    )
+  }, [])
+
+  const dashboard = (
+    <ReadinessOverviewVisual
+      className="w-full border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]"
+      reveal={variant === 'intelligent' ? 'intelligent' : 'none'}
+    />
+  )
+
   return (
     <section
       className="relative overflow-x-clip bg-evergreen-deep"
       aria-label="Hero"
+      data-hero-variant={variant}
     >
       <div className="relative overflow-x-clip">
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -24,10 +45,6 @@ export function HeroSection() {
         </div>
 
         <div className="relative z-10 mx-auto flex w-full max-w-[1280px] flex-col justify-center px-5 pt-[88px] pb-11 sm:px-8 sm:pt-[92px] sm:pb-12 xl:min-h-[700px] xl:pb-14 2xl:min-h-[740px]">
-          {/*
-            Stack by default. Two columns from xl (1280) so mid laptop widths
-            never squeeze text under a scaled dashboard.
-          */}
           <div className="grid w-full grid-cols-1 items-center gap-7 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] xl:gap-10">
             <div className="min-w-0 max-w-xl text-ivory xl:max-w-none">
               <p className="hero-rise font-display text-[0.72rem] font-semibold tracking-[0.2em] text-ivory/75 uppercase sm:text-xs">
@@ -35,10 +52,6 @@ export function HeroSection() {
               </p>
 
               <h1 className="hero-rise delay-1 mt-3 font-display text-[2.15rem] leading-[1.08] font-semibold tracking-tight text-balance sm:text-5xl xl:text-[3.4rem] xl:leading-[1.05]">
-                {/*
-                  Prefer two lines on wide desktops; allow natural wrap below
-                  so phrases never overflow the text column.
-                */}
                 <span className="block xl:whitespace-nowrap">
                   Know who can work.
                 </span>
@@ -68,9 +81,11 @@ export function HeroSection() {
             </div>
 
             <div className="min-w-0 w-full justify-self-stretch">
-              <HeroProductReveal>
-                <ReadinessOverviewVisual className="w-full border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]" />
-              </HeroProductReveal>
+              {variant === 'layered' ? (
+                <HeroProductReveal>{dashboard}</HeroProductReveal>
+              ) : (
+                dashboard
+              )}
             </div>
           </div>
         </div>

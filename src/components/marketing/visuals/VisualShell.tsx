@@ -14,6 +14,10 @@ import { cn } from '@/lib/utils'
 type VisualShellProps = {
   children: ReactNode
   className?: string
+  /** Extra classes on the shell root (e.g. intelligent-reveal staging). */
+  shellClassName?: string
+  /** Extra classes on the title bar row. */
+  headerClassName?: string
   title?: string
   /** When false, omit the small illustrative caption (e.g. dense hero). */
   showCaption?: boolean
@@ -24,6 +28,8 @@ type VisualShellProps = {
 export function VisualShell({
   children,
   className,
+  shellClassName,
+  headerClassName,
   title,
   showCaption = true,
   tone = 'light',
@@ -34,10 +40,16 @@ export function VisualShell({
         'overflow-hidden rounded-[18px] border shadow-[0_20px_50px_rgba(32,38,35,0.09)]',
         tone === 'dark' ? 'border-white/18 bg-white' : 'border-stone bg-white',
         className,
+        shellClassName,
       )}
     >
       {title ? (
-        <div className="flex items-center justify-between border-b border-stone/80 bg-ivory/90 px-4 py-2.5">
+        <div
+          className={cn(
+            'flex items-center justify-between border-b border-stone/80 bg-ivory/90 px-4 py-2.5',
+            headerClassName,
+          )}
+        >
           <p className="truncate text-xs font-medium text-slate">{title}</p>
           {showCaption ? (
             <p className="shrink-0 text-[10px] font-medium tracking-wide text-slate/80 uppercase">

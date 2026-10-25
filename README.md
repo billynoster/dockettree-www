@@ -36,6 +36,16 @@ npm run build   # writes static site to out/
 npx serve out -l 43127
 ```
 
+### Hero Try Live variations
+
+Default is the approved **static** hero. Compare motion experiments with a query param (no in-page toggles):
+
+| URL | Variation |
+| --- | --- |
+| `/` or `/?hero=static` | Approved static baseline |
+| `/?hero=layered` | Concept B translucent layered reveal |
+| `/?hero=intelligent` | Intelligent dashboard piece-by-piece reveal |
+
 ## CTA targets
 
 | CTA | URL |

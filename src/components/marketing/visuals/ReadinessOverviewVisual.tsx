@@ -18,13 +18,25 @@ import { VisualShell, useVisualMotionActive } from './VisualShell'
 type Props = {
   className?: string
   compact?: boolean
+  /**
+   * `intelligent` — CSS piece-by-piece hero reveal (CLS-safe).
+   * `none` — default; keeps subtle in-view motion when not reduced.
+   */
+  reveal?: 'none' | 'intelligent'
 }
 
 /** Hero: interactive readiness overview — single benefit: know who can work. */
-export function ReadinessOverviewVisual({ className, compact }: Props) {
+export function ReadinessOverviewVisual({
+  className,
+  compact,
+  reveal = 'none',
+}: Props) {
   const rootRef = useRef<HTMLDivElement>(null)
   const active = useVisualMotionActive(rootRef)
   const reduce = useReducedMotion()
+  const intelligent = reveal === 'intelligent'
+  /** Skip framer entrances when intelligent CSS owns the choreography. */
+  const motionOff = Boolean(reduce || intelligent)
   const vendors = useMemo(() => getDemoVendors(), [])
   const counts = useMemo(() => getDemoCounts(), [])
   const attention = useMemo(
@@ -67,13 +79,19 @@ export function ReadinessOverviewVisual({ className, compact }: Props) {
   return (
     <VisualShell
       className={className}
+      shellClassName={intelligent ? 'hero-intel-shell' : undefined}
+      headerClassName={intelligent ? 'hero-intel-header' : undefined}
       title="Readiness overview"
       tone="dark"
       showCaption={!compact}
     >
       <div
         ref={rootRef}
-        className={cn('p-3 sm:p-4', compact && 'p-2.5 sm:p-3')}
+        className={cn(
+          'p-3 sm:p-4',
+          compact && 'p-2.5 sm:p-3',
+          intelligent && 'hero-intel-reveal',
+        )}
       >
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-2">
           {cards.map((card, i) => (
@@ -82,14 +100,26 @@ export function ReadinessOverviewVisual({ className, compact }: Props) {
               className={cn(
                 'flex min-h-[4.25rem] flex-col justify-between rounded-xl px-2.5 py-2 sm:min-h-[4.75rem] sm:px-3 sm:py-2.5',
                 card.className,
+                intelligent && 'hero-intel-kpi',
               )}
-              initial={reduce ? false : { opacity: 0, y: 8 }}
-              animate={
-                active || reduce
-                  ? { opacity: 1, y: 0 }
-                  : { opacity: 0.9, y: 0 }
+              style={
+                intelligent
+                  ? ({ ['--intel-i' as string]: i } as React.CSSProperties)
+                  : undefined
               }
-              transition={{ duration: 0.35, delay: reduce ? 0 : i * 0.05 }}
+              initial={motionOff ? false : { opacity: 0, y: 8 }}
+              animate={
+                motionOff
+                  ? undefined
+                  : active
+                    ? { opacity: 1, y: 0 }
+                    : { opacity: 0.9, y: 0 }
+              }
+              transition={
+                motionOff
+                  ? undefined
+                  : { duration: 0.35, delay: i * 0.05 }
+              }
             >
               <p className="font-display text-2xl font-semibold leading-none tracking-tight sm:text-[1.65rem]">
                 {card.n}
@@ -109,7 +139,12 @@ export function ReadinessOverviewVisual({ className, compact }: Props) {
         </div>
 
         <div className="mt-3 grid items-start gap-2.5 lg:grid-cols-[1.25fr_0.85fr] lg:gap-2.5">
-          <div className="rounded-xl border border-stone/80 bg-white p-2.5 sm:p-3">
+          <div
+            className={cn(
+              'rounded-xl border border-stone/80 bg-white p-2.5 sm:p-3',
+              intelligent && 'hero-intel-panel hero-intel-panel-attention',
+            )}
+          >
             <p className="font-display text-[10px] font-semibold tracking-[0.14em] text-slate uppercase">
               Needs attention
             </p>
@@ -118,16 +153,22 @@ export function ReadinessOverviewVisual({ className, compact }: Props) {
                 <motion.li
                   key={v.id}
                   className="flex items-center justify-between gap-2 rounded-lg bg-ivory px-2.5 py-1.5"
-                  initial={reduce ? false : { opacity: 0, x: -6 }}
+                  initial={motionOff ? false : { opacity: 0, x: -6 }}
                   animate={
-                    active || reduce
-                      ? { opacity: 1, x: 0 }
-                      : { opacity: 0.92, x: 0 }
+                    motionOff
+                      ? undefined
+                      : active
+                        ? { opacity: 1, x: 0 }
+                        : { opacity: 0.92, x: 0 }
                   }
-                  transition={{
-                    duration: 0.3,
-                    delay: reduce ? 0 : 0.12 + i * 0.04,
-                  }}
+                  transition={
+                    motionOff
+                      ? undefined
+                      : {
+                          duration: 0.3,
+                          delay: 0.12 + i * 0.04,
+                        }
+                  }
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-charcoal">
@@ -150,7 +191,12 @@ export function ReadinessOverviewVisual({ className, compact }: Props) {
             </ul>
           </div>
 
-          <div className="rounded-xl bg-pale-moss/60 p-2.5 sm:p-3">
+          <div
+            className={cn(
+              'rounded-xl bg-pale-moss/60 p-2.5 sm:p-3',
+              intelligent && 'hero-intel-panel hero-intel-panel-expirations',
+            )}
+          >
             <p className="font-display text-[10px] font-semibold tracking-[0.14em] text-slate uppercase">
               Upcoming expirations
             </p>

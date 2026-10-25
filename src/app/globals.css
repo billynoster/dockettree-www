@@ -205,6 +205,72 @@
   }
 }
 
+/*
+ * Intelligent Dashboard Reveal (~2s, once) — `?hero=intelligent`
+ * Shell+header 0–250 · KPIs L→R 250–1150 · panels 1050–1750 · settle ~2000.
+ * Opacity/transform only — layout space reserved from first frame (no CLS).
+ */
+.hero-intel-shell {
+  --intel-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  animation: hero-intel-in 250ms var(--intel-ease) both;
+}
+
+.hero-intel-kpi,
+.hero-intel-panel {
+  animation-name: hero-intel-in;
+  animation-duration: 320ms;
+  animation-timing-function: var(--intel-ease, cubic-bezier(0.22, 1, 0.36, 1));
+  animation-fill-mode: both;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+.hero-intel-kpi {
+  animation-delay: calc(250ms + (var(--intel-i, 0) * 200ms));
+}
+
+.hero-intel-panel-attention {
+  animation-delay: 1050ms;
+  animation-duration: 380ms;
+}
+
+.hero-intel-panel-expirations {
+  animation-delay: 1350ms;
+  animation-duration: 380ms;
+}
+
+@keyframes hero-intel-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-intel-shell {
+    animation-duration: 180ms;
+  }
+
+  .hero-intel-kpi {
+    animation-duration: 260ms;
+    animation-delay: calc(160ms + (var(--intel-i, 0) * 110ms));
+  }
+
+  .hero-intel-panel-attention {
+    animation-delay: 700ms;
+    animation-duration: 280ms;
+  }
+
+  .hero-intel-panel-expirations {
+    animation-delay: 900ms;
+    animation-duration: 280ms;
+  }
+}
+
 .status-chip {
   display: inline-flex;
   align-items: center;
@@ -254,6 +320,14 @@
   }
 
   .hero-product-stage {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero-intel-shell,
+  .hero-intel-kpi,
+  .hero-intel-panel {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
