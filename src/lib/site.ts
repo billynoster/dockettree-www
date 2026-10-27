@@ -3,6 +3,8 @@ export const APP_URL = 'https://app.dockettree.com'
 export const SIGNUP_URL = `${APP_URL}/signup`
 export const LOGIN_URL = `${APP_URL}/login`
 export const PRICING_URL = `${APP_URL}/pricing`
+/** Official X (Twitter) profile — confirmed by Billy. */
+export const X_URL = 'https://x.com/dockettree'
 /**
  * Marketing contact form + sales CTA destination.
  * Inbox delivery uses env-only `POSTMARK_TO` in the Pages Function — never

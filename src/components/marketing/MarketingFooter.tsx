@@ -1,6 +1,31 @@
 import Image from 'next/image'
 
-import { APP_URL, CONTACT_PATH, LOGIN_URL, NAV_ANCHORS } from '@/lib/site'
+import {
+  APP_URL,
+  CONTACT_PATH,
+  LOGIN_URL,
+  NAV_ANCHORS,
+  X_URL,
+} from '@/lib/site'
+
+/** Official X logo mark (simple path). */
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      width="18"
+      height="18"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        fill="currentColor"
+        d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+      />
+    </svg>
+  )
+}
 
 export function MarketingFooter() {
   const year = new Date().getFullYear()
@@ -71,6 +96,15 @@ export function MarketingFooter() {
             <p className="mt-4 text-sm text-slate">
               Everything connected. Nothing lost.
             </p>
+            <a
+              href={X_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Docket Tree on X"
+              className="mt-5 inline-flex h-9 w-9 items-center justify-center rounded-lg text-charcoal transition-colors hover:bg-pale-moss hover:text-evergreen-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-evergreen focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
+            >
+              <XIcon />
+            </a>
           </div>
         </div>
 
