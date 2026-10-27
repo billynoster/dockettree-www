@@ -100,10 +100,15 @@ export function MarketingFooter() {
               href={X_URL}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Docket Tree on X"
-              className="mt-5 inline-flex h-9 w-9 items-center justify-center rounded-lg text-charcoal transition-colors hover:bg-pale-moss hover:text-evergreen-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-evergreen focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
+              aria-label="Docket Tree on X — updates on vendor readiness"
+              className="mt-5 inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1.5 rounded-sm text-sm text-slate transition-colors hover:text-evergreen focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-evergreen focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
             >
-              <XIcon />
+              <span>Updates on vendor readiness</span>
+              <span className="inline-flex items-center gap-1.5 font-medium text-current">
+                <span aria-hidden="true">→</span>
+                <XIcon className="shrink-0" />
+                <span>Follow on X</span>
+              </span>
             </a>
           </div>
         </div>
