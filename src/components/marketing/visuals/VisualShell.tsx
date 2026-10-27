@@ -22,10 +22,7 @@ type VisualShellProps = {
   /** When false, omit the small illustrative caption (e.g. dense hero). */
   showCaption?: boolean
   tone?: 'light' | 'dark'
-  /**
-   * Marks the hero dashboard for the pre-hydration FOUC guard
-   * (`html[data-hero=intelligent] [data-hero-dashboard]`).
-   */
+  /** Marks the hero readiness dashboard shell. */
   heroDashboard?: boolean
 }
 

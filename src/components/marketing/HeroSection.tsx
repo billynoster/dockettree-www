@@ -1,44 +1,18 @@
-'use client'
-
-import { useLayoutEffect, useState } from 'react'
-
-import { HeroProductReveal } from '@/components/hero/HeroProductReveal'
 import { StaticProductBackground } from '@/components/hero/StaticProductBackground'
 import { ReadinessOverviewVisual } from '@/components/marketing/visuals'
 import { Button } from '@/components/ui/button'
-import {
-  type HeroVariant,
-  parseHeroVariant,
-} from '@/lib/heroVariant'
 import { SIGNUP_URL } from '@/lib/site'
 
 /**
- * Production hero — static product-led composition.
- * Try Live variations via `?hero=static|layered|intelligent` (default static).
+ * Production hero — intelligent dashboard piece-by-piece reveal.
+ * Reduced-motion: dashboard completes immediately (CSS).
  */
 export function HeroSection() {
-  const [variant, setVariant] = useState<HeroVariant>('static')
-
-  // Layout effect so Try Live `?hero=` applies before first paint when possible.
-  useLayoutEffect(() => {
-    setVariant(
-      parseHeroVariant(new URLSearchParams(window.location.search).get('hero')),
-    )
-  }, [])
-
-  const dashboard = (
-    <ReadinessOverviewVisual
-      className="w-full border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]"
-      reveal={variant === 'intelligent' ? 'intelligent' : 'none'}
-      heroDashboard
-    />
-  )
-
   return (
     <section
       className="relative overflow-x-clip bg-evergreen-deep"
       aria-label="Hero"
-      data-hero-variant={variant}
+      data-hero-variant="intelligent"
     >
       <div className="relative overflow-x-clip">
         <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -82,11 +56,11 @@ export function HeroSection() {
             </div>
 
             <div className="min-w-0 w-full justify-self-stretch">
-              {variant === 'layered' ? (
-                <HeroProductReveal>{dashboard}</HeroProductReveal>
-              ) : (
-                dashboard
-              )}
+              <ReadinessOverviewVisual
+                className="w-full border border-white/14 shadow-[0_18px_48px_rgba(0,0,0,0.28)]"
+                reveal="intelligent"
+                heroDashboard
+              />
             </div>
           </div>
         </div>

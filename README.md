@@ -36,15 +36,9 @@ npm run build   # writes static site to out/
 npx serve out -l 43127
 ```
 
-### Hero Try Live variations
+### Hero
 
-Default is the approved **static** hero. Compare motion experiments with a query param (no in-page toggles):
-
-| URL | Variation |
-| --- | --- |
-| `/` or `/?hero=static` | Approved static baseline |
-| `/?hero=layered` | Concept B translucent layered reveal |
-| `/?hero=intelligent` | Intelligent dashboard piece-by-piece reveal |
+Production default is the **intelligent dashboard reveal** (piece-by-piece assembly). No `?hero=` toggle. `prefers-reduced-motion`: completed dashboard immediately.
 
 ## CTA targets
 

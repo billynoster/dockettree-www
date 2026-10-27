@@ -23,7 +23,7 @@ type Props = {
    * `none` — default; keeps subtle in-view motion when not reduced.
    */
   reveal?: 'none' | 'intelligent'
-  /** Hero-only: enables pre-hydration FOUC guard for `?hero=intelligent`. */
+  /** Hero-only: marks the production dashboard shell for CSS targeting. */
   heroDashboard?: boolean
 }
 
