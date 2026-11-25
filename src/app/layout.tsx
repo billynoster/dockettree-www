@@ -28,20 +28,27 @@ export const metadata: Metadata = {
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
   openGraph: {
-    title: 'Docket Tree | Vendor Readiness for Property Operations',
+    title: 'Docket Tree | Vendor readiness, in one place.',
     description:
-      'Manage vendor readiness, documents, requests, reviews, and expirations in one connected workspace.',
+      'Track documents, expirations, and next steps across every property. Everything connected. Nothing lost.',
     url: 'https://dockettree.com',
     siteName: 'Docket Tree',
-    images: ['/brand/logo-stacked.png'],
+    images: [
+      {
+        url: '/share/og-default.png',
+        width: 1200,
+        height: 630,
+        alt: 'Docket Tree — Vendor readiness, in one place.',
+      },
+    ],
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Docket Tree | Vendor Readiness for Property Operations',
+    title: 'Docket Tree | Vendor readiness, in one place.',
     description:
-      'Manage vendor readiness, documents, requests, reviews, and expirations in one connected workspace.',
-    images: ['/brand/logo-stacked.png'],
+      'Track documents, expirations, and next steps across every property. Everything connected. Nothing lost.',
+    images: ['/share/og-default.png'],
   },
   alternates: {
     canonical: 'https://dockettree.com',
